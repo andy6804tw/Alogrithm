@@ -67,6 +67,11 @@ http://mropengate.blogspot.com/2015/04/algorithm-ch1-master-theorem-super.html
 
 以下是一些遞迴關係常用的解法。
 
+### Substitution method
+適用於檢驗某個候選解答是否為此遞迴演算法的正確解
+
+1. 利用猜測、觀察或匯整的方式，找出遞迴方程式的解
+2. 利用數學歸納法証明此解是正確的
 
 
 ### Recursion-tree method
@@ -95,3 +100,5 @@ Solution: T(n) = Θ(f(n)).
 ```
 
 http://mropengate.blogspot.com/2015/04/algorithm-ch1-master-theorem-super.html
+
+
