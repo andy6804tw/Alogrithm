@@ -52,3 +52,14 @@ void Factorial(int n)
      return factN;
 }
 ```
+
+
+常用的數列總和複雜度一覽
+等差數列： 1+2+3+…+n=O(n2)  
+等比數列： r+r2…+rn=O(rn)
+2次方數列：12+22+…+n2=O(n3)
+d次方數列：1d+2d+…+nd=O(nd+1)
+http://mropengate.blogspot.com/2015/04/algorithm-ch1-master-theorem-super.html
+
+## 遞迴樹與時間複雜度分析
+遞迴的思想就是將大問題一層一層地分解為小問題來求解，如果我們把這個分解過程畫成圖，它其實就是一棵樹，我們稱之為遞迴樹。
