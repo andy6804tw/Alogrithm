@@ -4,6 +4,7 @@
 - 替代法 (Substitution method)
 - 遞迴樹法 (Recursion tree method)
 - 支配定理法 (Master theorem method)
+http://mropengate.blogspot.com/2015/01/algorithm-ch1-asymptotic-notation-and.html
 
 一般來說，有兩種方式可以撰寫具有重覆執行 (Repetitive)特性的演算法
 - Iteration (迴圈)
@@ -92,3 +93,5 @@ f (n) grows polynomially faster than nlogba (by nε factor)
 and f (n) satisfies regularity condition that af(n/b) ≤ cf(n) for some constant c< 1.
 Solution: T(n) = Θ(f(n)).  
 ```
+
+http://mropengate.blogspot.com/2015/04/algorithm-ch1-master-theorem-super.html
