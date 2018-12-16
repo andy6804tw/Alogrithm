@@ -63,3 +63,14 @@ http://mropengate.blogspot.com/2015/04/algorithm-ch1-master-theorem-super.html
 
 ## 遞迴樹與時間複雜度分析
 遞迴的思想就是將大問題一層一層地分解為小問題來求解，如果我們把這個分解過程畫成圖，它其實就是一棵樹，我們稱之為遞迴樹。
+
+以下是一些遞迴關係常用的解法。
+
+
+
+### Recursion-tree method
+1. 依照遞迴定義展開
+2. 對每一層的cost加總，得到per-level cost 
+3. 加總per-level cost，得到total cost
+
+![](../Screenshot/img2-1.jpg)
