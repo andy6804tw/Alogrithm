@@ -25,19 +25,19 @@ Procedure 遞迴副程式名(參數)
 > 遞迴比較沒有效率
 
 
-## 舉例(費氏數列)
+## 舉例(階層)
 ### Recursive Factorial Algorithm
 
 ```
-inputs: num identified the ordinal of the Fibonacci number
-outputs: returns the nth Fibonacci number
-void Fib(int num)
-{
-     if (num is 0 OR num is 1)
-         return num;
+inputs: n is the number being raised factorially
+outputs: n! is returned
+Procedure Factorial(int n)
+begin
+     if (n = 0)
+         return 1;
      else
-         return (Fib(num-1) + Fib(num-2));
-}
+         return (n Factorial(n-1));
+end
 ```
 
 ### Iterative Factorial Algorithm
