@@ -55,10 +55,10 @@ void Factorial(int n)
 
 
 常用的數列總和複雜度一覽
-等差數列： 1+2+3+…+n=O(n2)  
-等比數列： r+r2…+rn=O(rn)
-2次方數列：12+22+…+n2=O(n3)
-d次方數列：1d+2d+…+nd=O(nd+1)
+- 等差數列： 1+2+3+…+n=O(n2)  
+- 等比數列： r+r2…+rn=O(rn)
+- 2次方數列：12+22+…+n2=O(n3)
+- d次方數列：1d+2d+…+nd=O(nd+1)
 http://mropengate.blogspot.com/2015/04/algorithm-ch1-master-theorem-super.html
 
 ## 遞迴樹與時間複雜度分析
@@ -74,3 +74,21 @@ http://mropengate.blogspot.com/2015/04/algorithm-ch1-master-theorem-super.html
 3. 加總per-level cost，得到total cost
 
 ![](../Screenshot/img2-1.jpg)
+
+
+### Master Method
+```
+T(n) = aT(n/b) + f(n) ,  where a≥1, b> 1, and f is asymptotically positive. 
+f (n) = O (nlogba–ε)for some constant ε> 0.
+f (n) grows polynomially slower than nlogba (by nε factor)
+Solution: T(n) = Θ(nlogba)
+ 
+f (n) = Θ(nlogba lgkn)for some constant k≥0
+f (n) and nlogba–ε grow at similar rates. 
+Solution: T(n) = Θ(nlogba  lgk+1n).
+T(n) = 3T(n / 3) + n log n , answer: T(n) = Θ(n log2n) 
+  
+f (n) grows polynomially faster than nlogba (by nε factor)
+and f (n) satisfies regularity condition that af(n/b) ≤ cf(n) for some constant c< 1.
+Solution: T(n) = Θ(f(n)).  
+```
