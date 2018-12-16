@@ -67,6 +67,23 @@ http://mropengate.blogspot.com/2015/04/algorithm-ch1-master-theorem-super.html
 
 以下是一些遞迴關係常用的解法。
 
+### Mathematics-based Method
+數學解法是直接將遞迴方程式以遞迴的觀念由最末項往前求解，然後整理出答案。
+
+```
+Sol:
+    T(n) = T(n-1) + n 
+         = (T(n-2) + (n-1)) + n 
+         = T(n-2) + (n-1) + n
+         = (T(n-3) + (n-2)) + (n-1) + n 
+         = T(n-3) + (n-2) + (n-1) + n
+                …
+         = T(1) + 2 + 3 + … + (n-2) + (n-1) + n
+         = 1 + 2 + 3 + … + (n-2) + (n-1) + n
+
+T(n) = n(n+1)/2       時間複雜度: O(n²)                                          
+```
+
 ### Substitution method
 適用於檢驗某個候選解答是否為此遞迴演算法的正確解
 
