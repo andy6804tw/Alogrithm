@@ -119,3 +119,15 @@ Solution: T(n) = Θ(f(n)).
 http://mropengate.blogspot.com/2015/04/algorithm-ch1-master-theorem-super.html
 
 
+### 數學歸納法
+歸納法 (Induction) 是在當我們已經有一個可能的推論結果之後，用來驗証這個推論結果是否正確的工具。
+
+1. 驗証 n=1 時命題 f(n) 成立 (這叫歸納的基礎，或遞推的基礎)
+2. 假設 n=k 時命題f(n) 成立 (這叫歸納假設，或叫遞推的根據) 
+3. 証明 n=k+1 於上述假設時，命題 f(n)成立。
+
+```
+1. 找出歸納基底 (Induction base): 當 n=1 (或其它起始值)時，該推論結果為真的証明。
+2. 做歸納假設 (Induction hypothesis): 對任一 n1 (或其它起始值)，假設該推論結果為真。
+3. 找出歸納步驟 (Induction step): 當該推論結果對 n 為真，它對 n+1 也為真的証明。       
+```
