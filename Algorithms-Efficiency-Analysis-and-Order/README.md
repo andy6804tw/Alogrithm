@@ -8,7 +8,7 @@
 
 2. 二元搜尋(Binary Search)
 
-    worst case : log<sub>2</sub><sup>n+1</sup>
+    worst case : log<sub>2</sub><sup>n</sup>+1
 
 3. 費氏數列(Fibonacci)
 
