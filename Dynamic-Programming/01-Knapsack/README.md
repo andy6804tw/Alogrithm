@@ -89,18 +89,20 @@ package dynamic;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class Item{
-	int item,value,weight,unit;
-	public Item(int item,int weight,int value,int unit) {
-		this.item=item;
-		this.value=value;
-		this.weight=weight;
-		this.unit=unit;
+class Item {
+	int item, value, weight, unit;
+
+	public Item(int item, int weight, int value, int unit) {
+		this.item = item;
+		this.value = value;
+		this.weight = weight;
+		this.unit = unit;
 	}
 }
+
 public class Iteration_Knapsack {
 
-	static int  N=0,maxWeight=0;
+	static int N = 0, maxWeight = 0;
 	static ArrayList<Item> list;
 	static int c[][];
 
@@ -114,7 +116,7 @@ public class Iteration_Knapsack {
 		int weight = 0, value = 0, unit = 0;
 		c = new int[N + 1][maxWeight + 1];
 		System.out.println("請輸入每個物品的Weight 和 Profit: ");
-		//list.add(new Item(0, 0, 0, 0));
+		// list.add(new Item(0, 0, 0, 0));
 		for (int i = 0; i < N; i++) {
 			String arr[] = scn.nextLine().split(" ");
 			weight = Integer.parseInt(arr[0]);
@@ -124,16 +126,15 @@ public class Iteration_Knapsack {
 		}
 		// 動態規劃背包
 		for (int i = 1; i <= N; i++) {
-			  // we iterate on each capacity
-			  for (int j = 0; j <= maxWeight; j++) {
-			    if (list.get(i - 1).weight > j)
-			      c[i][j] = c[i-1][j];
-			    else
-			      // we maximize value at this rank in the matrix
-			      c[i][j] = Math.max(c[i-1][j], c[i-1][j - list.get(i - 1).weight] +
-			    		  list.get(i - 1).value);
-			  }
+			// we iterate on each capacity
+			for (int j = 0; j <= maxWeight; j++) {
+				if (list.get(i - 1).weight > j)
+					c[i][j] = c[i - 1][j];
+				else
+					// we maximize value at this rank in the matrix
+					c[i][j] = Math.max(c[i - 1][j], c[i - 1][j - list.get(i - 1).weight] + list.get(i - 1).value);
 			}
+		}
 
 		System.out.println("\n| Item | Weight | Profit | Unit |");
 		System.out.println("-----------------------------------");
@@ -142,11 +143,11 @@ public class Iteration_Knapsack {
 					list.get(i).unit);
 		}
 		System.out.printf("\n\nFractional Knapsack 總重 %d 最大利益為: %d\n", maxWeight, c[N][maxWeight]);
-		
-		//列出陣列
-		for(int i=0;i<=N;i++) {
-			for(int j=0;j<=maxWeight;j++) {
-				System.out.printf("%-5d",c[i][j]);
+
+		// 列出陣列
+		for (int i = 0; i <= N; i++) {
+			for (int j = 0; j <= maxWeight; j++) {
+				System.out.printf("%-5d", c[i][j]);
 			}
 			System.out.println();
 		}
@@ -157,12 +158,12 @@ public class Iteration_Knapsack {
 			if (res != c[i - 1][maxWeight]) {
 				// itemsSolution.add(items[i-1]);
 				// we remove items value and weight
-				System.out.print(list.get(i-1).item + " ");
-				res -= list.get(i-1).value;
-				maxWeight -= list.get(i-1).weight;
+				System.out.print(list.get(i - 1).item + " ");
+				res -= list.get(i - 1).value;
+				maxWeight -= list.get(i - 1).weight;
 			}
 		}
-		
+
 	}
 
 }
