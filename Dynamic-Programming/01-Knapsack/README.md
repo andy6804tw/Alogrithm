@@ -168,5 +168,28 @@ public class Iteration_Knapsack {
 }
 ```
 
+### 測試
+- 範例1
+
+```
+測資:
+
+5
+20
+15 60
+10 30
+30 60
+5 50
+1 5
+```
+
+```
+驗證:
+
+ (1*5)+(5*10)+(14*4)=111
+```
+
+![](./screenshot/img01.PNG)
+
 
 ref: https://medium.com/@ssaurel/solving-the-knapsack-problem-in-java-c985c71a7e64
