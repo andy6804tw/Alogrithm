@@ -175,6 +175,30 @@ public class Recursive_Knapsack {
 }
 ```
 
+### 測試
+- 範例1
+
+```
+測資:
+
+5
+20
+15 60
+10 30
+30 60
+5 50
+1 5
+```
+
+```
+驗證:
+ weight: 5+15=20
+ value: 50+60=110
+```
+
+![](./screenshot/img02.PNG)
+
+
 ## Iteration 迭代
 使用 for 迴圈實作。
 
