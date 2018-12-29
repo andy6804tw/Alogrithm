@@ -186,8 +186,8 @@ public class Iteration_Knapsack {
 
 ```
 驗證:
-
- (1*5)+(5*10)+(14*4)=111
+ weight: 5+15=20
+ value: 50+60=110
 ```
 
 ![](./screenshot/img01.PNG)
