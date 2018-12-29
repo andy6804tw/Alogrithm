@@ -115,7 +115,7 @@ public class Iteration_Knapsack {
 		maxWeight = Integer.parseInt(scn.nextLine());
 		int weight = 0, value = 0, unit = 0;
 		c = new int[N + 1][maxWeight + 1];
-		System.out.println("請輸入每個物品的Weight 和 Profit: ");
+		System.out.println("請輸入每個物品的Weight 和 Value: ");
 		// list.add(new Item(0, 0, 0, 0));
 		for (int i = 0; i < N; i++) {
 			String arr[] = scn.nextLine().split(" ");
@@ -136,7 +136,7 @@ public class Iteration_Knapsack {
 			}
 		}
 
-		System.out.println("\n| Item | Weight | Profit | Unit |");
+		System.out.println("\n| Item | Weight | Value | Unit |");
 		System.out.println("-----------------------------------");
 		for (int i = 0; i < N; i++) {
 			System.out.printf("%4d %8d %8d %7d\n", list.get(i).item, list.get(i).weight, list.get(i).value,
