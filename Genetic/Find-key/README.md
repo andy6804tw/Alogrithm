@@ -769,6 +769,6 @@ Max Fitness: 16
 
 ## Reference
 
-[人工智慧 - 遺傳演算法 (Genetic Algorithm) video](http://ccc.nqu.edu.tw/wd.html#ai:geneticAlgorithm)
+[人工智慧 - 遺傳演算法 (Genetic Algorithm) video](https://www.youtube.com/watch?v=KM3Sle4uheA)
 [人工智慧 - 遺傳演算法 (Genetic Algorithm) article](http://ccckmit.wikidot.com/so:geneticalgorithm)
 [GitHub](https://github.com/cccnqu/ai107b/blob/master/example/02-optimize/geneticAlgorithm/GA.js)
