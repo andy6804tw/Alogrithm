@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/andy6804tw/Alogrithm.svg?branch=master)](https://travis-ci.org/andy6804tw/Alogrithm)
 # Alogrithm 演算法
 ## Summary
 
