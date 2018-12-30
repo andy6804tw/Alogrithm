@@ -8,16 +8,16 @@ package Genetic;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-class Node{
+class GAkey{
 	int chromosome[]=new int [16];
 	int fitness;
-	public Node(int[] chromosome,int fitness) {
+	public GAkey(int[] chromosome,int fitness) {
 		this.chromosome=chromosome.clone();
 		this.fitness=fitness;
 	}
 }
 public class Main {
-	static ArrayList<Node> list;
+	static ArrayList<GAkey> list;
 	static int []key= {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0};
 	public static void main(String[] args) {
 		list=new ArrayList<>();
@@ -50,13 +50,13 @@ public class Main {
 				chromosome[j]=bit; // 隨機給定一個0,1值
 			}
 			int fitness=calcFitness(chromosome);// fitness計算
-			list.add(new Node(chromosome,fitness));
+			list.add(new GAkey(chromosome,fitness));
 		}
 	}
 	// rePopulation
 	public static void rePopulation(int size) {
 		// new population
-		ArrayList<Node> newList=new ArrayList<>();
+		ArrayList<GAkey> newList=new ArrayList<>();
 		for(int i=0;i<size;i++) {
 			// select parent
 			int parent1[]=selection();
@@ -64,7 +64,7 @@ public class Main {
 			// crossover
 			int chromosome[]=crossover(parent1,parent2);
 			int fitness=calcFitness(chromosome);// fitness計算
-			newList.add(new Node(chromosome,fitness));
+			newList.add(new GAkey(chromosome,fitness));
 		}
 		list=newList; //更新population(新一代)
 		mergeSort(list, 0, 99); // 排序
@@ -105,7 +105,7 @@ public class Main {
 			System.out.println(Arrays.toString(list.get(i).chromosome)+"  "+list.get(i).fitness);
 		}
 	}
-	public static void mergeSort(ArrayList<Node> list, int left, int right) {
+	public static void mergeSort(ArrayList<GAkey> list, int left, int right) {
 		if (left < right) { // 當左邊大於右邊時代表只剩一個元素了
 			int mid = (left + right) / 2; // 每次對切，切到只剩一個為止
 			mergeSort(list, left, mid); // 左邊等份
@@ -114,13 +114,13 @@ public class Main {
 		}
 	}
 
-	public static void Merge(ArrayList<Node> list, int left, int mid, int right) {
-		ArrayList<Node> temp = new ArrayList<>();// 建立一個temp串列存放排序後的值
+	public static void Merge(ArrayList<GAkey> list, int left, int mid, int right) {
+		ArrayList<GAkey> temp = new ArrayList<>();// 建立一個temp串列存放排序後的值
 		int left_end = mid - 1; // 左邊最後一個位置
 		int index = left; // 位移起始點
 		int origin_left = left; // 將最左邊的變數儲存起來(最後搬移元素會用到)
 		for (int i = 0; i < right + 1; i++)
-			temp.add(new Node(new int [16],0));
+			temp.add(new GAkey(new int [16],0));
 
 		while ((left <= left_end) && (mid <= right)) { // 左右兩串列比大小依序放入temp串列中儲存
 			if (list.get(left).fitness <= list.get(mid).fitness)
