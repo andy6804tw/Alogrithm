@@ -764,7 +764,7 @@ Max Fitness: 16
 
 由最後結果可以看到最佳解與原先我們設定的一組 key 相同，Fitness(16) 也與 Key 數量相同，故找到解。觀察上面每一代印出來的結果可以發現在第 9 代最後一個就找出解了，若代數(maxGen)設大一點會發現未來幾代會逐漸收斂 `Fitness=16` 這組答案。這個範例我的代數(maxGen)跟 Population(popSize) 為了好觀察所以設的比較小，各位可以多執行幾次會發現某幾次執行並不會找出最佳解。因此使用基因演算法需要不斷的測試並修改參數得到一個最適合的答案，所以可以試著提高代數(maxGen)跟 Population(popSize)以及突變率(mutationRate)。
 
-![](./screenshot/img01.PNG)
+![](./screenshot/img01.png)
 
 
 ## Reference
