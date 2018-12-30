@@ -14,15 +14,17 @@ class Node {
 class GeneticAlogrithm {
   ArrayList<Node> list; // Population
   int[] key; // 解答
-  int xyNum; // 染色體數量
+  int xySize; // 染色體數量
   double mutationRate; // 突變率
   int maxGen; // 演化幾代
   int popSize; // Population 數量
+  int maxFitness = 0; // 最大 Fitness
+  int[] solutionKey; // 最佳解
 
   public GeneticAlogrithm(ArrayList<Node> list, int[] key, double mutationRate, int maxGen, int popSize) {
     this.list = list = new ArrayList<>();
     this.key = key.clone();
-    this.xyNum = key.length; // 染色體(Chromosome)數量直接由解(key)得到
+    this.xySize = key.length; // 染色體(Chromosome)數量直接由解(key)得到
     this.mutationRate = mutationRate;
     this.maxGen = maxGen;
     this.popSize = popSize;
@@ -46,21 +48,34 @@ class GeneticAlogrithm {
   // 運行GA演算法
   public void GArun() {
     // 隨機產生Population 傳入值代表有多少基因
-    initPopulation(popSize, xyNum);
+    initPopulation(popSize, xySize);
     // 複製、選擇->交配->突變 (循環重複到 maxGen 代)
     for (int i = 0; i < maxGen; i++) {
       System.out.println("--------- Generation " + (i + 1) + " ---------");
       rePopulation(popSize);
       print();
     }
+    System.out.println("\n|  Population Size  |   Mutate Rate   | Max Generation |");
+    System.out.println("----------------------------------------------------------");
+    System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), maxGen);
+    // 印出原始 Key
+    System.out.print("\nOriginal Key=> ");
+    for (int i = 0; i < xySize; i++)
+      System.out.print(key[i] + " ");
+    // 印出 GA 後找出來的最佳 Key
+    System.out.print("\nOriginal Key=> ");
+    for (int i = 0; i < xySize; i++)
+      System.out.print(solutionKey[i] + " ");
+    // 印出 GA 後找出來的最佳 Fitness
+    System.out.println("\nMax Fitness: " + maxFitness);
   }
 
   // 第一次初始化 Population (隨機產生子代)
-  private void initPopulation(int popSize, int xyNum) {
+  private void initPopulation(int popSize, int xySize) {
     for (int i = 0; i < popSize; i++) {
       // random Chromosome
-      int chromosome[] = new int[xyNum];
-      for (int j = 0; j < xyNum; j++) {
+      int chromosome[] = new int[xySize];
+      for (int j = 0; j < xySize; j++) {
         int bit = randomInt(0, 1);
         chromosome[j] = bit; // 隨機給定一個0,1值
       }
@@ -89,6 +104,10 @@ class GeneticAlogrithm {
       }
       // Fitness計算
       int fitness = calcFitness(chromosome);
+      if (maxFitness < fitness) {
+        maxFitness = fitness; // 目前最大Fitness
+        solutionKey = chromosome.clone(); // 目前最佳解
+      }
       // 並放回 Population
       newList.add(new Node(chromosome, fitness));
     }
@@ -109,7 +128,7 @@ class GeneticAlogrithm {
   // Fitness 計算
   private int calcFitness(int[] chromosome) {
     int fitness = 0;
-    for (int i = 0; i < xyNum; i++) {
+    for (int i = 0; i < xySize; i++) {
       if (key[i] == chromosome[i]) {
         fitness += 1; // 計算每個位元是否吻合key每一個值
       }
@@ -119,8 +138,8 @@ class GeneticAlogrithm {
 
   // Crossover (交配)
   private int[] crossover(int[] c1, int[] c2) {
-    int chromosome[] = new int[xyNum], cutIndex = randomInt(0, xyNum);
-    for (int i = 0; i < xyNum; i++) {
+    int chromosome[] = new int[xySize], cutIndex = randomInt(0, xySize);
+    for (int i = 0; i < xySize; i++) {
       if (i < cutIndex)
         chromosome[i] = c1[i];
       else
@@ -131,7 +150,7 @@ class GeneticAlogrithm {
 
   // Mutate (突變)
   private int[] mutate(int[] chromsome) {
-    int[] newChromosome = new int[xyNum];
+    int[] newChromosome = new int[xySize];
     int index = randomInt(0, chromsome.length - 1);
     for (int i = 0; i < chromsome.length; i++) {
       if (i == index)
@@ -165,7 +184,7 @@ class GeneticAlogrithm {
     int index = left; // 位移起始點
     int origin_left = left; // 將最左邊的變數儲存起來(最後搬移元素會用到)
     for (int i = 0; i < right + 1; i++)
-      temp.add(new Node(new int[xyNum], 0));
+      temp.add(new Node(new int[xySize], 0));
 
     while ((left <= left_end) && (mid <= right)) { // 左右兩串列比大小依序放入temp串列中儲存
       if (list.get(left).fitness <= list.get(mid).fitness)
@@ -192,11 +211,13 @@ class GeneticAlogrithm {
 }
 
 public class Main {
+  static int maxFitness = 0;
+
   public static void main(String[] args) {
     ArrayList<Node> list = new ArrayList<>();
     int[] key = { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 };
     // Population、解答、突變率、演化幾代、Population 數量
-    GeneticAlogrithm gaKey = new GeneticAlogrithm(list, key, 0.01, 10, 25);
+    GeneticAlogrithm gaKey = new GeneticAlogrithm(list, key, 0.01, 10, 50);
     gaKey.GArun();
   }
 
