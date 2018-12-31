@@ -120,11 +120,57 @@ public class Secection {
 ![](./screenshot/img02.png)
 
 #### 方法二
-此方法是利用 Fitness 算出總和再依據計算每一個的機率(probability)，
+此方法是利用 Fitness 算出總和再依據計算每一個的機率(probability)，首先計算所有 Fitness 將總和存入變數 `totalSum` 中。接著計算每個 Fitness 的機率並依序存入 `probability[]` 陣列中;機率的計算的方法是 `fitness[i]/totalSum`，分母為目前的 Fitness 值，分母為 Fitness 陣列中的總和。接著0~1 中隨機取得亂數(機率)並存到變數 `randNum` 中。最後迴圈從尾依序累加每一個 `probability[]` 陣列中的機率，當 `partialSum` 機率依據加總直到隨機挑選出來的 `randNum` 小於等於 `partialSum` 就把所索引值回傳代表選擇到這一個。
 
 ```java
+public class Secection {
+	static int fitness[]={0,0,0,0,0,0,1,1,1,2,3,5,8,9,10,10};
+	static double probability[]=new double[fitness.length];
+	public static void main(String[] args) {
+		System.out.println("Fitness List:");
+		for(int i=0;i<fitness.length;i++)
+			System.out.print(fitness[i]+" ");
+		int index=selection(); // 輪盤法挑選一個 index
+		System.out.println("\n\nindex: "+index+"\nfitness[index]: "+fitness[index]);
+	}
+	public static int selection() {
+		double totalSum=0; // 全部 Fitness 總和的變數
+		double randNum=0; // 0~1 中隨機取得亂數的變數
+		double partialSum=0; //目前機率加總的變數
+		
+		// 計算所有的 Fitness 總和
+		for(int i=0;i<fitness.length;i++){
+			totalSum+=fitness[i];
+		}
+		// 計算每個的機率
+		for(int i=0;i<fitness.length;i++) {
+			probability[i]=fitness[i]/totalSum;
+		}
+		// 0~1 中隨機取得亂數(機率)
+		randNum=Math.random();
+		
+		// partialSum 機率依據加總直到隨機挑選出來的 randNum 小於等於 partialSum
+		// 就把所索引值回傳代表選擇到這一個
+		for(int i=probability.length-1;i>=0;i--) {
+			partialSum+=probability[i];
+			if(randNum<=partialSum)
+				return i;
+		}
+		return -1;
+	}
+}
+```
+
+##### 測試
 
 ```
+參數設定:
+  fitness[]={0,0,0,0,0,0,1,1,1,2,3,5,8,9,10,10};  
+
+  ps:須由小到大排列
+```
+
+![](./screenshot/img03.png)
 
 
 ## Reference
