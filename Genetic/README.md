@@ -96,7 +96,7 @@ public class Secection {
 		randNum=(int)(Math.random() *totalSum);
 		
 		// 從 N 開始遞減把每個 Fitness 相加若 partialSum 大於等於隨機取得的亂數(randNum)
-		// 就把所以值回傳代表選擇到這一個
+		// 就把索引值回傳代表選擇到這一個
 		for(int i=fitness.length-1;i>=0;i--) {
 			partialSum+=fitness[i];
 			if(partialSum>=randNum) {
@@ -119,6 +119,12 @@ public class Secection {
 
 ![](./screenshot/img02.png)
 
+#### 方法二
+此方法是利用 Fitness 算出總和再依據計算每一個的機率(probability)，
+
+```java
+
+```
 
 
 ## Reference
