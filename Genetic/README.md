@@ -121,4 +121,5 @@ public class Secection {
 
 
 ## Reference
-https://codertw.com/%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7/4400/#outline__1
+- [遺傳演算法GA(Genetic Algorithm)入門知識梳理](https://codertw.com/%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7/4400/#outline__1)
+- [Java Implementation of the Roulette Wheel Selection Method](https://www.youtube.com/watch?v=9JzFcGdpT8E)

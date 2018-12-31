@@ -1,221 +1,110 @@
-import java.util.ArrayList;
-import java.util.Arrays;
+var GA = {
+  population: [],    // 族群
+  mutationRate: 0.1, // 突變率
+}
 
-class Node {
-  int chromosome[];
-  int fitness;
-
-  public Node(int[] chromosome, int fitness) {
-    this.chromosome = chromosome.clone();
-    this.fitness = fitness;
+GA.run = function (size, maxGen) { // 遺傳演算法主程式
+  GA.population = GA.newPopulation(size); // 產生初始族群
+  for (t = 0; t < maxGen; t++) { // 最多產生 maxGen 代
+    console.log("============ generation", t, "===============")
+    GA.population = GA.reproduction(GA.population); // 產生下一代
+    GA.dump(); // 印出目前族群
   }
 }
 
-class GeneticAlogrithm {
-  ArrayList<Node> list; // Population
-  int[] key; // 解答
-  int xySize; // 染色體數量
-  double mutationRate; // 突變率
-  int maxGen; // 演化幾代
-  int popSize; // Population 數量
-  int maxFitness = 0; // 最大 Fitness
-  int[] solutionKey; // 最佳解
-
-  public GeneticAlogrithm(ArrayList<Node> list, int[] key, double mutationRate, int maxGen, int popSize) {
-  this.list = list = new ArrayList<>();
-  this.key = key.clone();
-  this.xySize = key.length; // 染色體(Chromosome)數量直接由解(key)得到
-  this.mutationRate = mutationRate;
-  this.maxGen = maxGen;
-  this.popSize = popSize;
+GA.newPopulation = function (size) {
+  var newPop = [];
+  for (var i = 0; i < size; i++) {
+    var chromosome = GA.randomChromosome(); // 隨機產生新染色體
+    newPop[i] = {
+      chromosome: chromosome,
+      fitness: GA.calcFitness(chromosome)
+    };
+  }
+  newPop.sort(fitnessCompare); // 對整個族群進行排序
+  return newPop;
 }
 
-	// 隨機產生a~b間的亂數
-	private double random(int a, int b) {
+var fitnessCompare = (c1, c2) => c1.fitness - c2.fitness;
+
+// 輪盤選擇法: 隨機選擇一個個體 -- 落點在 i*i ~ (i+1)*(i+1) 之間都算是 i
+GA.selection = function () {
+  var n = GA.population.length;
+  var shoot = randomInt(0, n * n / 2);
+  var select = Math.floor(Math.sqrt(shoot * 2));
+  return GA.population[select];
+}
+
+// 產生下一代
+GA.reproduction = function () {
+  var newPop = []
+  for (var i = 0; i < GA.population.length; i++) {
+    var parent1 = GA.selection(); // 選取父親
+    var parent2 = GA.selection(); // 選取母親
+    var chromosome = GA.crossover(parent1, parent2); // 父母交配，產生小孩
+    var prob = random(0, 1);
+    if (prob < GA.mutationRate) // 有很小的機率
+      chromosome = GA.mutate(chromosome); // 小孩會突變
+    newPop[i] = { chromosome: chromosome, fitness: GA.calcFitness(chromosome) }; // 將小孩放進下一代族群裡
+  }
+  newPop.sort(fitnessCompare); // 對新一代根據適應性（分數）進行排序
+  return newPop;
+}
+
+GA.dump = function () { // 印出一整代成員
+  for (var i = 0; i < GA.population.length; i++) {
+    console.log(i, GA.population[i]);
+  }
+}
+
+function random(a, b) { // 取得 a 到 b 之間的一個浮點亂數
   return a + Math.random() * (b - a);
 }
 
-	// 隨機產生a~b間的整數
-	private int randomInt(int a, int b) {
-  return (int) Math.round(random(a, b));
+function randomInt(a, b) { // 取得 a 到 b 之間的一個整數亂數
+  return Math.floor(random(a, b));
 }
 
-	// 隨機突變
-	private int randomChoose(int[] array) {
-  return array[randomInt(0, array.length - 1)];
+function randomChoose(array) { // 隨機取得 array 陣列的一個元素
+  return array[randomInt(0, array.length)];
 }
 
-	// 運行GA演算法
-	public void GArun() {
-  // 隨機產生Population 傳入值代表有多少基因
-  initPopulation(popSize, xySize);
-  // 複製、選擇->交配->突變 (循環重複到 maxGen 代)
-  for (int i = 0; i < maxGen; i++) {
-    System.out.println("--------- Generation " + (i + 1) + " ---------");
-    rePopulation(popSize);
-    print();
+// 以上是遺傳演算法的框架，以下是實例
+var KeyGA = GA; // 此實例是要找出和 KeyGA 一模一樣的序列
+
+KeyGA.key = "1010101010101010";
+
+KeyGA.randomChromosome = function () { // 隨機產生一個染色體 (一個 16 位元的 01 字串)
+  var bits = [];
+  for (var i = 0; i < KeyGA.key.length; i++) {
+    var bit = randomInt(0, 2);
+    bits.push(bit);
   }
-  System.out.println("\n|  Population Size  |   Mutate Rate   | Max Generation |");
-  System.out.println("----------------------------------------------------------");
-  System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), maxGen);
-  // 印出原始 Key
-  System.out.print("\nOriginal Key=> ");
-  for (int i = 0; i < xySize; i++)
-  System.out.print(key[i] + " ");
-  // 印出 GA 後找出來的最佳 Key
-  System.out.print("\nOriginal Key=> ");
-  for (int i = 0; i < xySize; i++)
-  System.out.print(solutionKey[i] + " ");
-  // 印出 GA 後找出來的最佳 Fitness
-  System.out.println("\nMax Fitness: " + maxFitness);
+  return bits.join('');
 }
 
-	// 第一次初始化 Population (隨機產生子代)
-	private void initPopulation(int popSize, int xySize) {
-  for (int i = 0; i < popSize; i++) {
-    // random Chromosome
-    int chromosome[] = new int[xySize];
-    for (int j = 0; j < xySize; j++) {
-      int bit = randomInt(0, 1);
-      chromosome[j] = bit; // 隨機給定一個0,1值
-    }
-    int fitness = calcFitness(chromosome);// fitness計算
-    list.add(new Node(chromosome, fitness));
-  }
-  // Population產生後要依據 Fitness 做排序(小->大)
-  mergeSort(list, 0, popSize - 1);
-}
-
-	// rePopulation (產生下一代)
-	private void rePopulation(int popSize) {
-  // new Population
-  ArrayList < Node > newList = new ArrayList<>();
-  for (int i = 0; i < popSize; i++) {
-    // select parent
-    int parent1[] = selection();
-    int parent2[] = selection();
-    // Crossover
-    int chromosome[] = crossover(parent1, parent2);
-    // 有一定機率突變
-    double prob = random(0, 1);
-    // 如果亂數小於設定的突變率就進行突變
-    if (prob < mutationRate) {
-      chromosome = mutate(chromosome).clone();
-    }
-    // Fitness計算
-    int fitness = calcFitness(chromosome);
-    if (maxFitness < fitness) {
-      maxFitness = fitness; // 目前最大Fitness
-      solutionKey = chromosome.clone(); // 目前最佳解
-    }
-    // 並放回 Population
-    newList.add(new Node(chromosome, fitness));
-  }
-  // 更新Population(新一代)
-  list = newList;
-  // Population產生後要依據 Fitness 做排序(小->大)
-  mergeSort(list, 0, popSize - 1);
-}
-
-	// Selection (輪盤選擇法)
-	private int[] selection() {
-  int n = popSize - 1; // GA population;
-  int shoot = randomInt(0, n * n / 2);
-  int select = (int) Math.round(Math.sqrt(shoot * 2));
-  return list.get(select).chromosome;
-}
-
-	// Fitness 計算
-	private int calcFitness(int[] chromosome) {
-  int fitness = 0;
-  for (int i = 0; i < xySize; i++) {
-    if (key[i] == chromosome[i]) {
-      fitness += 1; // 計算每個位元是否吻合key每一個值
-    }
+KeyGA.calcFitness = function (c) { // 分數是和 key 一致的位元個數
+  var fitness = 0;
+  for (var i = 0; i < KeyGA.key.length; i++) {
+    fitness += (c[i] === KeyGA.key[i]) ? 1 : 0;
   }
   return fitness;
 }
 
-	// Crossover (交配)
-	private int[] crossover(int[] c1, int[] c2) {
-  int chromosome[] = new int[xySize], cutIndex = randomInt(0, xySize);
-  for (int i = 0; i < xySize; i++) {
-    if (i < cutIndex)
-      chromosome[i] = c1[i];
-    else
-      chromosome[i] = c2[i];
-  }
-  return chromosome;
-}
-	// Mutate (突變)
-	private int[] mutate(int[] chromsome) {
-  int[] newChromosome = new int[xySize];
-  int index = randomInt(0, chromsome.length - 1);
-  for (int i = 0; i < chromsome.length; i++) {
-    if (i == index)
-      newChromosome[i] = randomChoose(new int[]{ 0, 1});
-    else
-      newChromosome[i] = chromsome[i];
-  }
-  return newChromosome;
+KeyGA.crossover = function (p1, p2) {
+  var cutIdx = randomInt(0, p1.chromosome.length);
+  var head = p1.chromosome.substr(0, cutIdx);
+  var tail = p2.chromosome.substr(cutIdx);
+  return head + tail;
 }
 
-	// 列出所有 Population
-	private void print() {
-  for (int i = 0; i < popSize; i++) {
-    System.out.println(Arrays.toString(list.get(i).chromosome) + "  " + list.get(i).fitness);
-  }
-}
-	// 合併排序
-	private void mergeSort(ArrayList < Node > list, int left, int right) {
-  if (left < right) { // 當左邊大於右邊時代表只剩一個元素了
-    int mid = (left + right) / 2; // 每次對切，切到只剩一個為止
-    mergeSort(list, left, mid); // 左邊等份
-    mergeSort(list, mid + 1, right); // 右邊等份
-    Merge(list, left, mid + 1, right); // 排序且合併
-  }
+KeyGA.mutate = function (chromosome) { // 突變運算
+  var i = randomInt(0, chromosome.length); // 選擇突變點
+  var cMutate = chromosome.substr(0, i) +
+    randomChoose(['0', '1']) + // 在突變點上隨機選取 0 或 1
+    chromosome.substr(i + 1);
+  return cMutate; // 傳回突變後的染色體
 }
 
-	private void Merge(ArrayList < Node > list, int left, int mid, int right) {
-  ArrayList < Node > temp = new ArrayList<>();// 建立一個temp串列存放排序後的值
-  int left_end = mid - 1; // 左邊最後一個位置
-  int index = left; // 位移起始點
-  int origin_left = left; // 將最左邊的變數儲存起來(最後搬移元素會用到)
-  for (int i = 0; i < right + 1; i++)
-  temp.add(new Node(new int[xySize], 0));
-
-  while ((left <= left_end) && (mid <= right)) { // 左右兩串列比大小依序放入temp串列中儲存
-    if (list.get(left).fitness <= list.get(mid).fitness)
-      temp.add(index++, list.get(left++));
-    else
-      temp.add(index++, list.get(mid++));
-  }
-
-  if (left <= left_end) { // 若左邊的串列尚未走完將剩餘的數值依序放入temp串列中
-    while (left <= left_end) {
-      temp.add(index++, list.get(left++));
-    }
-  } else { // 反之若右邊的串列尚未走完將剩餘的數值依序放入temp串列中
-    while (mid <= right) {
-      temp.add(index++, list.get(mid++));
-    }
-  }
-  // 最後將排序好的temp串列複製到list串列中
-  for (int i = origin_left; i <= right; i++) {
-    list.set(i, temp.get(i));
-  }
-
-}
-}
-
-public class Main {
-  static int maxFitness = 0;
-  public static void main(String[] args) {
-    ArrayList < Node > list = new ArrayList<>();
-    int[] key = { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 };
-    // Population、解答、突變率、演化幾代、Population 數量
-    GeneticAlogrithm gaKey = new GeneticAlogrithm(list, key, 0.01, 10, 50);
-    gaKey.GArun();
-  }
-
-}
+// 執行遺傳演算法，企圖找到 key，最多執行一百代，每代族群都是一百人
+KeyGA.run(100, 100);
