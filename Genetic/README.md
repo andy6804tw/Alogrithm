@@ -24,8 +24,7 @@
 
     ![](./screenshot/img01.png)
 
-
-結論是基因演算法在繁殖過程中會發生基因交叉(Crossover) ，基因突變 (Mutation)。每一次繁殖會計算適應度(Fitness)，適應度低的個體會被逐步淘汰，而適應度高的個體會越來越多。那麼經過 N 代的自然選擇後，儲存下來的個體都是適應度很高的，其中很可能包含最佳解的個體。
+> 遺傳運算元：遺傳演算法有3個最基本的操作=> 選擇，交叉，變異。
 
 ## 架構與步驟
 基因算法基本步驟是：
@@ -51,6 +50,73 @@
 
 6 ）終止條件判斷   t ≦ T , t =  t+1  回到步驟2
   - 當 t>T 時終止輸出解。 
+
+
+結論是基因演算法在繁殖過程中會發生基因交叉(Crossover) ，基因突變 (Mutation)。每一次繁殖會計算適應度(Fitness)，適應度低的個體會被逐步淘汰，而適應度高的個體會越來越多。那麼經過 N 代的自然選擇後，儲存下來的個體都是適應度很高的，其中很可能包含最佳解的個體。
+
+### 初始化
+需要將問題的解編碼成字串的形式才能使用遺傳演算法。最簡單的一種編碼方式是二進位制編碼，即將問題的解編碼成二進位制位陣列的形式。例如，問題的解是整數，那麼可以將其編碼成二進位制位陣列的形式。這邊舉個例子，將 0-1 字串作為0-1背包問題的解就屬於二進位制編碼。
+
+```
+ex:
+    基因A：10101010101010 (代表一個個體的染色體)
+```
+
+### 適應度 (Fitness)
+適應度是用於評價某個染色體的價值。在我們每次繁殖過程中要計算每個基因的適應值，適應值越接近目標值越好代表接近最佳解。例如：0-1背包問題的目標值是在限定總重量(W)中所取得物品的價值(value)。
+
+### 選擇 (Selection)
+選擇一些染色體來產生下一代。一種常用的選擇策略是 `比例選擇`，也就是個體被選中的概率與其適應度函式值成正比。假設群體的個體總數是M，那麼那麼一個體Xi被選中的概率為f(Xi)/( f(X1) f(X2) …….. f(Xn) ) 。比例選擇實現演算法就是所謂的 `輪盤選擇法` (Roulette Wheel Selection)。
+
+所謂的輪盤選擇法就是在整個族群中，每個個體存活下來或是可以產生後代的機率和個體的評估分數成正比。也就是說，越有優勢(Fintness越大)的個體存活下來(Selection被選擇到)的機率越大，但弱勢個體也有存活的可能，不是絕對的淘汰。就想像個體放在飛標靶上，而個體分數就對應到個體擁有的標靶面積。
+
+
+```java
+public class Secection {
+	static int fitness[]={0,0,0,0,0,0,1,1,1,2,3,5,8,9,10,10};
+	public static void main(String[] args) {
+		System.out.println("Fitness List:");
+		for(int i=0;i<fitness.length;i++)
+			System.out.print(fitness[i]+" ");
+		int index=selection(); // 輪盤法挑選一個 index
+		System.out.println("\n\nindex: "+index+"\nfitness[index]: "+fitness[index]);
+	}
+	public static int selection() {
+		int totalSum=0; // 全部 Fitness 總和的變數
+		int randNum=0; // 0~totalSum 中隨機取得亂數的變數
+		int partialSum=0; // Fitness陣列中從最尾巴開始加總的變數
+		
+		// 計算所有的 Fitness 總和
+		for(int i=0;i<fitness.length;i++){
+			totalSum+=fitness[i];
+		}
+		// 0~totalSum 中隨機取得亂數
+		randNum=(int)(Math.random() *totalSum);
+		
+		// 從 N 開始遞減把每個 Fitness 相加若 partialSum 大於等於隨機取得的亂數(randNum)
+		// 就把所以值回傳代表選擇到這一個
+		for(int i=fitness.length-1;i>=0;i--) {
+			partialSum+=fitness[i];
+			if(partialSum>=randNum) {
+				return i;
+			}
+		}
+		return -1;
+	}
+}
+```
+
+#### 測試
+使用者可以手動的先把 `fitness[]` 陣列放入數值，切記要從小到到排序才符合輪盤選擇規則，首先計算所有的 Fitness 總和存入 `totalSum` 變數中;接著0~totalSum 中隨機取得亂數存入 `randNum`;最後從陣列最尾依序相加並存入 `partialSum`;當 `partialSum` 大於等於隨機取得的亂數 `randNum` 就停止並回傳目前的 index，表示這一次輪盤所挑選的內容。
+
+```
+參數設定:
+  fitness[]={0,0,0,0,0,0,1,1,1,2,3,5,8,9,10,10};  
+
+  ps:須由小到大排列
+```
+
+![](./screenshot/img02.png)
 
 
 
