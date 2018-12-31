@@ -70,6 +70,8 @@ ex:
 
 所謂的輪盤選擇法就是在整個族群中，每個個體存活下來或是可以產生後代的機率和個體的評估分數成正比。也就是說，越有優勢(Fintness越大)的個體存活下來(Selection被選擇到)的機率越大，但弱勢個體也有存活的可能，不是絕對的淘汰。就想像個體放在飛標靶上，而個體分數就對應到個體擁有的標靶面積。
 
+#### 方法一
+此方法使用 Fitness 下去做 Selection 挑選的依據。使用者可以手動的先把 `fitness[]` 陣列放入數值，切記要從小到到排序才符合輪盤選擇規則，首先計算所有的 Fitness 總和存入 `totalSum` 變數中;接著0~totalSum 中隨機取得亂數存入 `randNum`;最後從陣列最尾依序相加並存入 `partialSum`;當 `partialSum` 大於等於隨機取得的亂數 `randNum` 就停止並回傳目前的 index，表示這一次輪盤所挑選的內容。
 
 ```java
 public class Secection {
@@ -106,8 +108,7 @@ public class Secection {
 }
 ```
 
-#### 測試
-使用者可以手動的先把 `fitness[]` 陣列放入數值，切記要從小到到排序才符合輪盤選擇規則，首先計算所有的 Fitness 總和存入 `totalSum` 變數中;接著0~totalSum 中隨機取得亂數存入 `randNum`;最後從陣列最尾依序相加並存入 `partialSum`;當 `partialSum` 大於等於隨機取得的亂數 `randNum` 就停止並回傳目前的 index，表示這一次輪盤所挑選的內容。
+##### 測試
 
 ```
 參數設定:
