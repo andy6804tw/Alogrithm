@@ -222,30 +222,3 @@ public class Main {
   }
 
 }
-
-
-/*
-6844 20
-1999 1
-901 4
-2227 5
-532 4
-3554 4
-1815 5
-3292 2
-3093 4
-2442 3
-393 2
-3657 5
-3694 4
-2283 5
-366 5
-3626 2
-3924 2
-81 3
-3570 3
-551 2
-124 1
-
-https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1760
-*/

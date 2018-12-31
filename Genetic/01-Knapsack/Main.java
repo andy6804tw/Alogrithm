@@ -34,7 +34,6 @@ class GAknapsack {
   int maxGen; // 演化幾代
   int popSize; // Population 數量
   int maxFitness = 0; // 最大 Fitness
-  int maxValue = 0;
   int[] solutionKey; // 最佳解
 
   public GAknapsack(ArrayList<Item> itemList, ArrayList<Chromosome> list, int N, int maxWeight, double mutationRate,
@@ -81,7 +80,7 @@ class GAknapsack {
     for (int i = 0; i < xySize; i++)
       System.out.print(solutionKey[i] + " ");
     // 印出 GA 後找出來的最佳 Fitness
-    System.out.println("\nMax Value: " + maxValue);
+    System.out.println("\nMax Value: " + maxFitness);
   }
 
   // 第一次初始化 Population (隨機產生子代)
@@ -153,11 +152,7 @@ class GAknapsack {
     if (fitness > maxWeight)
       return 0;
     else {
-      // 若沒超重代表符合解尋找最大值
-      if (maxValue < value) {
-        maxValue = value;
-      }
-      return fitness;
+      return value;
     }
   }
 
@@ -239,35 +234,37 @@ public class Knapsack {
   static ArrayList<Item> itemList;
   static int N = 0, maxWeight = 0;
 
-  public static void main(String[] args) {
-    Scanner scn = new Scanner(System.in);
-    itemList = new ArrayList<>();
-    System.out.print("請輸入物品數量: ");
-    N = Integer.parseInt(scn.nextLine());
-    System.out.print("請輸入最大重量上限: ");
-    maxWeight = Integer.parseInt(scn.nextLine());
-    int weight = 0, value = 0, unit = 0;
-    System.out.println("請輸入每個物品的Weight 和 Profit: ");
-    for (int i = 0; i < N; i++) {
-      String arr[] = scn.nextLine().split(" ");
-      weight = Integer.parseInt(arr[0]);
-      value = Integer.parseInt(arr[1]);
-      unit = Integer.parseInt(arr[1]) / Integer.parseInt(arr[0]);
-      itemList.add(new Item(i + 1, weight, value, unit));
-    }
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		itemList = new ArrayList<>();
+		System.out.print("請輸入物品數量: ");
+		N = Integer.parseInt(scn.nextLine());
+		System.out.print("請輸入最大重量上限: ");
+		maxWeight = Integer.parseInt(scn.nextLine());
+		int weight = 0, value = 0, unit = 0;
+		System.out.println("請輸入每個物品的Weight 和 Profit: ");
+		for (int i = 0; i < N; i++) {
+			String arr[] = scn.nextLine().split(" ");
+			weight = Integer.parseInt(arr[0]);
+			value = Integer.parseInt(arr[1]);
+			unit = Integer.parseInt(arr[1]) / Integer.parseInt(arr[0]);
+			itemList.add(new Item(i + 1, weight, value, unit));
+		}
 
-    System.out.println("\n| Item | Weight | Profit | Unit |");
-    System.out.println("-----------------------------------");
-    for (int i = 0; i < N; i++) {
-      System.out.printf("%4d %8d %8d %7d\n", itemList.get(i).item, itemList.get(i).weight, itemList.get(i).value,
-          itemList.get(i).unit);
-    }
-    // Genetic Alogrithm
-    ArrayList<Chromosome> list = new ArrayList<>();
-    // Population、突變率、演化幾代、Population 數量
-    GAknapsack gaKey = new GAknapsack(itemList, list, N, maxWeight, 0.01, 1000, 100);
-    gaKey.GArun();
+		System.out.println("\n| Item | Weight | Profit | Unit |");
+		System.out.println("-----------------------------------");
+		for (int i = 0; i < N; i++) {
+			System.out.printf("%4d %8d %8d %7d\n", itemList.get(i).item, itemList.get(i).weight, itemList.get(i).value,
+					itemList.get(i).unit);
+		}
+		// Genetic Alogrithm
+		ArrayList<Chromosome> list = new ArrayList<>();
+		// Population、突變率、演化幾代、Population 數量
+		GAknapsack gaKey = new GAknapsack(itemList, list, N, maxWeight, 0.01, 1000, 100);
+		gaKey.GArun();
 
-  }
+	}
 
 }
+
+// version 1
