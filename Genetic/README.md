@@ -319,3 +319,6 @@ NOT 1           0
 - [遺傳演算法GA(Genetic Algorithm)入門知識梳理](https://codertw.com/%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7/4400/#outline__1)
 - [Java Implementation of the Roulette Wheel Selection Method](https://www.youtube.com/watch?v=9JzFcGdpT8E)
 
+- [Genetic Algorithm](https://www.youtube.com/watch?v=JgqBM7JG9ew)
+
+- [01Knapsack Genetic](https://blog.csdn.net/x_i_y_u_e/article/details/50353775)
