@@ -57,22 +57,35 @@ class GAknapsack {
     return (int) Math.round(random(a, b));
   }
 
-  // 隨機突變
-  private int randomChoose(int[] array) {
-    return array[randomInt(0, array.length - 1)];
-  }
-
   // 運行GA演算法
   public void GArun() {
     // 隨機產生Population 傳入值代表有多少基因
     initPopulation(popSize, xySize);
     print();
     // 複製、選擇->交配->突變 (循環重複到 maxGen 代)
-    for (int i = 0; i < maxGen; i++) {
-      System.out.println("--------- Generation " + (i + 1) + " ---------");
-      rePopulation(popSize);
-      print();
+    if (maxGen != 0) {
+      for (int i = 0; i < maxGen; i++) {
+        System.out.println("--------- Generation " + (i + 1) + " ---------");
+        evolution(popSize);
+        print();
+      }
+    } else {
+      int count = 0, maxProfit = 0, i = 0;
+      while (true) {
+        System.out.println("--------- Generation " + (++i) + " ---------");
+        evolution(popSize);
+        print();
+        if (maxProfit == maxFitness) {
+          count++;
+        } else {
+          maxProfit = maxFitness;
+          count = 0;
+        }
+        if (count > 100)
+          break;
+      }
     }
+
     System.out.println("\n|  Population Size  |   Mutate Rate   | Max Generation |");
     System.out.println("----------------------------------------------------------");
     System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), maxGen);
@@ -86,7 +99,7 @@ class GAknapsack {
 
   // 第一次初始化 Population (隨機產生子代)
   private void initPopulation(int popSize, int xySize) {
-    for (int i = 0; i < popSize; i++) {
+    for (int i = 0, count = 0; i < popSize; i++) {
       // random Chromosome
       int chromosome[] = new int[xySize];
       if (i < xySize) {
@@ -98,67 +111,64 @@ class GAknapsack {
         }
       }
       int fitness = calcFitness(chromosome);// fitness計算
+      // if(fitness!=0) {
       list.add(new Chromosome(chromosome, fitness, 0));
+      count++;
+      // }
+      System.out.println(count);
     }
     // Population產生後要依據 Fitness 做排序(小->大)
     mergeSort(list, 0, popSize - 1);
   }
 
-  // rePopulation (產生下一代)
-  private void rePopulation(int popSize) {
+  // evolution (產生下一代)
+  private void evolution(int popSize) {
     // new Population
     ArrayList<Chromosome> newList = new ArrayList<>();
-    int first = -1;
     for (int i = 0; i < popSize; i++) {
       // select parent
-      int chromosome[] = list.get(selection()).chromosome;
+      int chromosome1[] = list.get(selection()).chromosome;
+      int chromosome2[] = list.get(selection()).chromosome;
 
       // Crossover
-      double prob = random(0, 1);
-      if (prob < 0.8) {
-        if (first < 0) {
-          int fitness = calcFitness(chromosome);// fitness計算
-          // 並放回 Population
-          newList.add(new Chromosome(chromosome, fitness, 0));
-          first = i;
-          if (maxFitness < fitness) {
-            maxFitness = fitness; // 目前最大Fitness
-            solutionKey = chromosome.clone(); // 目前最佳解
-          }
-        } else {
-
-          int crossChromosome[][] = crossover(newList.get(first).chromosome, chromosome);
-          int fitness1 = calcFitness(crossChromosome[0]);// fitness計算
-          int fitness2 = calcFitness(crossChromosome[1]);// fitness計算
-          // 並放回 Population
-          newList.set(first, new Chromosome(crossChromosome[0], fitness1, 0));
-          newList.add(new Chromosome(crossChromosome[1], fitness2, 0));
-          first = -1;
-          if (maxFitness < fitness1) {
-            maxFitness = fitness1; // 目前最大Fitness
-            solutionKey = crossChromosome[0].clone(); // 目前最佳解
-          }
-          if (maxFitness < fitness2) {
-            maxFitness = fitness2; // 目前最大Fitness
-            solutionKey = crossChromosome[1].clone(); // 目前最佳解
-          }
-        }
-      } else {
-        // 有一定機率突變
-        if (random(0, 1) < this.mutationRate) {
-          chromosome = mutate(chromosome);
-        }
-        // fitness計算
-        int fitness = calcFitness(chromosome);
-        // 並放回 Population
-        newList.add(new Chromosome(chromosome, fitness, 0));
-        if (maxFitness < fitness) {
-          maxFitness = fitness; // 目前最大Fitness
-          solutionKey = chromosome.clone(); // 目前最佳解
-        }
+      int crossChromosome[][] = crossover(chromosome1, chromosome2);
+      chromosome1 = crossChromosome[0];
+      chromosome2 = crossChromosome[1];
+      // if (maxFitness < fitness1) {
+      // maxFitness = fitness1; // 目前最大Fitness
+      // solutionKey = crossChromosome[0].clone(); // 目前最佳解
+      // }
+      // if (maxFitness < fitness2) {
+      // maxFitness = fitness2; // 目前最大Fitness
+      // solutionKey = crossChromosome[1].clone(); // 目前最佳解
+      // }
+      // 有一定機率突變
+      if (random(0, 1) < this.mutationRate) {
+        chromosome1 = mutate(chromosome1);
+        chromosome2 = mutate(chromosome2);
+      }
+      // fitness計算
+      int fitness1 = calcFitness(chromosome1);
+      int fitness2 = calcFitness(chromosome2);
+      // 並放回 Population
+      if (fitness1 != 0)
+        list.add(new Chromosome(chromosome1, fitness1, 0));
+      if (fitness2 != 0)
+        list.add(new Chromosome(chromosome2, fitness2, 0));
+      if (maxFitness < fitness1) {
+        maxFitness = fitness1; // 目前最大Fitness
+        solutionKey = chromosome1.clone(); // 目前最佳解
+      }
+      if (maxFitness < fitness2) {
+        maxFitness = fitness2; // 目前最大Fitness
+        solutionKey = chromosome2.clone(); // 目前最佳解
       }
     }
     // 更新Population(新一代)
+    for (int i = list.size() - 1; i >= list.size() - popSize; i--) {
+      newList.add(list.get(i));
+    }
+    System.out.println(newList.size() + " " + list.size());
     list = newList;
     // Population產生後要依據 Fitness 做排序(小->大)
     mergeSort(list, 0, popSize - 1);
@@ -320,7 +330,7 @@ public class Knapsack {
     // Genetic Alogrithm
     ArrayList<Chromosome> list = new ArrayList<>();
     // Population、突變率、演化幾代、Population 數量
-    GAknapsack gaKey = new GAknapsack(itemList, list, N, maxWeight, 0.15, 1000, 150);
+    GAknapsack gaKey = new GAknapsack(itemList, list, N, maxWeight, 0.15, 3, 100);
     gaKey.GArun();
 
   }
