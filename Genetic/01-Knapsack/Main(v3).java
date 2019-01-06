@@ -62,7 +62,7 @@ class GAknapsack {
   public void GArun() {
     // 隨機產生Population 傳入值代表有多少基因(Population)以及染色體的(Chromosome)基因個數
     initPopulation(popSize, geneSize);
-    print();
+    // print();
     // 複製、選擇->交配->突變 (循環重複到 maxGen 代)
     if (maxGen != 0) {
       for (int i = 0; i < maxGen; i++) {
@@ -119,16 +119,15 @@ class GAknapsack {
         }
       }
       int fitness = calcFitness(chromosome);// fitness計算
-      // if(fitness!=0) {
-      // 尋找最佳值
-      if (maxFitness < fitness) {
-        maxFitness = fitness; // 目前最大Fitness
-        solution = chromosome.clone(); // 目前最佳解
+      if (fitness != 0) {
+        // 尋找最佳值
+        if (maxFitness < fitness) {
+          maxFitness = fitness; // 目前最大Fitness
+          solution = chromosome.clone(); // 目前最佳解
+        }
+        popList.add(new Chromosome(chromosome, fitness, 0));
+        count++;
       }
-      popList.add(new Chromosome(chromosome, fitness, 0));
-      count++;
-      // }
-      System.out.println(count);
     }
   }
 
@@ -176,7 +175,6 @@ class GAknapsack {
       else
         newList.add(popList.get(randomInt(0, popList.size() - 1)));
     }
-    System.out.println(newList.size() + " " + popList.size());
     popList = newList;
 
   }
