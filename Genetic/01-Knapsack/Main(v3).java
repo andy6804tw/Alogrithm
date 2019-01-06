@@ -91,7 +91,7 @@ class GAknapsack {
           break;
         genCount++;
       }
-      System.out.println("\n|  Population Size  |   Mutate Rate   |");
+      System.out.println("\n|  Population Size  |   Mutate Rate   | Max Generation |");
       System.out.println("-----------------------------------------");
       // System.out.printf("%10d %20s\n", popSize, Double.toString(mutationRate));
       System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), genCount);
@@ -107,7 +107,7 @@ class GAknapsack {
 
   // 首次執行初始化 Population (隨機產生子代)
   private void initPopulation(int popSize, int geneSize) {
-    for (int i = 0, count = 0; count < popSize; i++) {
+    for (int i = 0; i < popSize; i++) {
       // random Chromosome
       int chromosome[] = new int[geneSize];
       if (i < geneSize) {
@@ -119,15 +119,12 @@ class GAknapsack {
         }
       }
       int fitness = calcFitness(chromosome);// fitness計算
-      if (fitness != 0) {
-        // 尋找最佳值
-        if (maxFitness < fitness) {
-          maxFitness = fitness; // 目前最大Fitness
-          solution = chromosome.clone(); // 目前最佳解
-        }
-        popList.add(new Chromosome(chromosome, fitness, 0));
-        count++;
+      // 尋找最佳值
+      if (maxFitness < fitness) {
+        maxFitness = fitness; // 目前最大Fitness
+        solution = chromosome.clone(); // 目前最佳解
       }
+      popList.add(new Chromosome(chromosome, fitness, 0));
     }
   }
 
@@ -329,7 +326,11 @@ public class Knapsack {
           itemList.get(i).unit);
     }
     // 物品、物品數量、背包最大承重、突變率、演化幾代、Population 數量
-    GAknapsack gaKnapsack = new GAknapsack(itemList, N, maxWeight, 0.15, 1000, 100);
+    GAknapsack gaKnapsack = new GAknapsack(itemList, N, maxWeight, 0.268, 1000, 150);
     gaKnapsack.GArun();
   }
 }
+
+// 此版本對付稀疏背包
+// 初始化時會有N條有一個物品被拿的染色體
+// 初始化時允許有 Fitness=0 的個體
