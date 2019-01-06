@@ -85,7 +85,6 @@ class GAknapsack {
           maxValue = maxFitness;
           count = 0;
         }
-
         if (count > 100)
           break;
         genCount++;
@@ -103,7 +102,7 @@ class GAknapsack {
     System.out.println("\nMax Value: " + maxFitness);
   }
 
-  // 第一次初始化 Population (隨機產生子代)
+  // 首次執行初始化 Population (隨機產生子代)
   private void initPopulation(int popSize, int geneSize) {
     for (int i = 0, count = 0; count < popSize; i++) {
       // random Chromosome
@@ -128,8 +127,6 @@ class GAknapsack {
       }
       System.out.println(count);
     }
-    // Population產生後要依據 Fitness 做排序(小->大)
-    mergeSort(popList, 0, popSize - 1);
   }
 
   // evolution (產生下一代)
@@ -167,14 +164,15 @@ class GAknapsack {
         solution = chromosome2.clone(); // 目前最佳解
       }
     }
+    // Population產生後要依據 Fitness 做排序(小->大)
+    mergeSort(popList, 0, popList.size() - 1);
     // 更新Population(新一代)
     for (int i = popList.size() - 1; i >= popList.size() - popSize; i--) {
       newList.add(popList.get(i));
     }
     System.out.println(newList.size() + " " + popList.size());
     popList = newList;
-    // Population產生後要依據 Fitness 做排序(小->大)
-    mergeSort(popList, 0, popList.size() - 1);
+
   }
 
   // Selection (輪盤選擇法)
@@ -198,10 +196,10 @@ class GAknapsack {
     // partialSum 機率依據加總直到隨機挑選出來的 randNum 小於等於 partialSum
     // 就把所索引值回傳代表選擇到這一個
     // 0~1 中隨機取得亂數(機率)
-    for (int j = popList.size() - 1; j >= 0; j--) {
-      partialSum += popList.get(j).probability;
+    for (int i = 0; i < popList.size(); i++) {
+      partialSum += popList.get(i).probability;
       if (randNum <= partialSum) {
-        return j;
+        return i;
       }
     }
     return 0;
@@ -330,7 +328,7 @@ public class Knapsack {
     // Genetic Alogrithm
     ArrayList<Chromosome> list = new ArrayList<>();
     // Population、突變率、演化幾代、Population 數量
-    GAknapsack gaKey = new GAknapsack(itemList, list, N, maxWeight, 0.1, 0, 100);
+    GAknapsack gaKey = new GAknapsack(itemList, list, N, maxWeight, 0.15, 0, 100);
     gaKey.GArun();
 
   }
