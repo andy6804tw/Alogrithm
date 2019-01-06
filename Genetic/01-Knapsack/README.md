@@ -188,5 +188,24 @@
 512 5
 1223 1
 
+16
+5617
+2318 5
+2596 4
+2011 1
+76 3
+566 2
+3410 3
+2785 5
+1837 2
+1375 4
+2080 3
+684 4
+3011 2
+416 3
+3415 2
+1569 5
+2367 4
+
 https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1760
 ```
