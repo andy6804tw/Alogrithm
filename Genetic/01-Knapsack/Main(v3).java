@@ -119,15 +119,15 @@ class GAknapsack {
         }
       }
       int fitness = calcFitness(chromosome);// fitness計算
-      if (fitness != 0) {
-        // 尋找最佳值
-        if (maxFitness < fitness) {
-          maxFitness = fitness; // 目前最大Fitness
-          solution = chromosome.clone(); // 目前最佳解
-        }
-        popList.add(new Chromosome(chromosome, fitness, 0));
-        count++;
+      // if(fitness!=0) {
+      // 尋找最佳值
+      if (maxFitness < fitness) {
+        maxFitness = fitness; // 目前最大Fitness
+        solution = chromosome.clone(); // 目前最佳解
       }
+      popList.add(new Chromosome(chromosome, fitness, 0));
+      count++;
+      // }
       System.out.println(count);
     }
   }
@@ -170,8 +170,11 @@ class GAknapsack {
     // Population產生後要依據 Fitness 做排序(小->大)
     mergeSort(popList, 0, popList.size() - 1);
     // 更新Population(新一代)
-    for (int i = popList.size() - 1; i >= popList.size() - popSize; i--) {
-      newList.add(popList.get(i));
+    for (int i = popList.size() - 1, count = 0; count < popSize; i--, count++) {
+      if (count < popSize * 0.9)
+        newList.add(popList.get(i));
+      else
+        newList.add(popList.get(randomInt(0, popList.size() - 1)));
     }
     System.out.println(newList.size() + " " + popList.size());
     popList = newList;
@@ -327,10 +330,8 @@ public class Knapsack {
       System.out.printf("%4d %8d %8d %7d\n", itemList.get(i).item, itemList.get(i).weight, itemList.get(i).value,
           itemList.get(i).unit);
     }
-    // Population、突變率、演化幾代、Population 數量
-    GAknapsack gaKey = new GAknapsack(itemList, N, maxWeight, 0.15, 1000, 100);
-    gaKey.GArun();
-
+    // 物品、物品數量、背包最大承重、突變率、演化幾代、Population 數量
+    GAknapsack gaKnapsack = new GAknapsack(itemList, N, maxWeight, 0.15, 1000, 100);
+    gaKnapsack.GArun();
   }
-
 }
