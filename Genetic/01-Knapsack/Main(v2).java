@@ -57,11 +57,6 @@ class GAknapsack {
     return (int) Math.round(random(a, b));
   }
 
-  // 隨機突變
-  private int randomChoose(int[] array) {
-    return array[randomInt(0, array.length - 1)];
-  }
-
   // 運行GA演算法
   public void GArun() {
     // 隨機產生Population 傳入值代表有多少基因
