@@ -177,5 +177,16 @@
 2558 3
 3808 3
 
+8
+5101
+1932 3
+2147 4
+406 1
+1472 2
+319 4
+897 3
+512 5
+1223 1
+
 https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1760
 ```
