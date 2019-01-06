@@ -172,6 +172,14 @@ public class Secection {
 
 ![](./screenshot/img03.png)
 
+ref:
+https://www.cnblogs.com/adelaide/articles/5679475.html
+
+http://www.geatbx.com/docu/algindex-02.html
+
+http://www.cnblogs.com/heaad/archive/2010/12/23/1914725.html
+
+
 ## 交叉 (Crossover)
 所謂交叉運算，是指對兩個相互配對的染色體依據交叉率按某種方法相互交換其部分基因，從而形成新的個體。交叉運算在GA中起關鍵作用，是產生新個體的主要方法。
 
@@ -322,3 +330,5 @@ NOT 1           0
 - [Genetic Algorithm](https://www.youtube.com/watch?v=JgqBM7JG9ew)
 
 - [01Knapsack Genetic](https://blog.csdn.net/x_i_y_u_e/article/details/50353775)
+
+- [GA 基因演算法架構](https://dotblogs.com.tw/dragon229/2013/01/03/86692)
