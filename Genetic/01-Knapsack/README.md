@@ -165,5 +165,17 @@
 7 89
 5 65
 
+9
+8390
+2347 2
+1315 3
+3496 3
+1432 5
+1146 2
+178 1
+1027 5
+2558 3
+3808 3
+
 https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1760
 ```
