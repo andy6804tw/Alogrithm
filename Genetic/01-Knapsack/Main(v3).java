@@ -16,9 +16,9 @@ class Item {
 }
 
 class Chromosome {
-  int chromosome[];
-  int fitness;
-  double probability;
+  int chromosome[]; // 染色體
+  int fitness; // 適應值(背包重量)
+  double probability; // 機率
 
   public Chromosome(int[] chromosome, int fitness, double probability) {
     this.chromosome = chromosome.clone();
@@ -28,24 +28,24 @@ class Chromosome {
 }
 
 class GAknapsack {
-  ArrayList<Chromosome> list; // Population
+  ArrayList<Chromosome> popList; // Population
   ArrayList<Item> itemList; // 背包物品
-  int xySize; // 染色體數量
   int maxWeight; // 背包最大重量
-  double mutationRate; // 突變率
-  int maxGen; // 演化幾代
+  int geneSize; // 染色體數量
   int popSize; // Population 數量
+  int maxGen; // 演化幾代
+  double mutationRate; // 突變率
   int maxFitness = 0; // 最大 Fitness
   int[] solution; // 最佳解
 
-  public GAknapsack(ArrayList<Item> itemList, ArrayList<Chromosome> list, int N, int maxWeight, double mutationRate,
+  public GAknapsack(ArrayList<Item> itemList, ArrayList<Chromosome> popList, int N, int maxWeight, double mutationRate,
       int maxGen, int popSize) {
     this.itemList = itemList;
-    this.list = list = new ArrayList<>();
-    this.xySize = N; // 染色體(Chromosome)數量直接由解(key)得到
+    this.popList = popList = new ArrayList<>();
+    this.geneSize = N; // 基因的數量經由背包物品的總數量得出
     this.maxWeight = maxWeight;
     this.mutationRate = mutationRate;
-    this.maxGen = maxGen;
+    this.maxGen = maxGen; // 演化N代 若maxGen=0時，則連續100代的最佳值都相同時當作收斂故跳出迴圈
     this.popSize = popSize;
   }
 
@@ -63,7 +63,7 @@ class GAknapsack {
   public void GArun() {
     int count = 0, maxValue = 0, genCount = 0;
     // 隨機產生Population 傳入值代表有多少基因(Population)以及染色體的(Chromosome)基因個數
-    initPopulation(popSize, xySize);
+    initPopulation(popSize, geneSize);
     print();
     // 複製、選擇->交配->突變 (循環重複到 maxGen 代)
     if (maxGen != 0) {
@@ -97,21 +97,21 @@ class GAknapsack {
     System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), maxGen == 0 ? genCount : maxGen);
     // 印出 GA 後找出來的最佳 Key
     System.out.print("\nSolution => ");
-    for (int i = 0; i < xySize; i++)
+    for (int i = 0; i < geneSize; i++)
       System.out.print(solution[i] + " ");
     // 印出 GA 後找出來的最佳 Fitness
     System.out.println("\nMax Value: " + maxFitness);
   }
 
   // 第一次初始化 Population (隨機產生子代)
-  private void initPopulation(int popSize, int xySize) {
+  private void initPopulation(int popSize, int geneSize) {
     for (int i = 0, count = 0; count < popSize; i++) {
       // random Chromosome
-      int chromosome[] = new int[xySize];
-      if (i < xySize) {
+      int chromosome[] = new int[geneSize];
+      if (i < geneSize) {
         chromosome[i] = 1;
       } else {
-        for (int j = 0; j < xySize; j++) {
+        for (int j = 0; j < geneSize; j++) {
           int bit = randomInt(0, 1);
           chromosome[j] = bit; // 隨機給定一個0,1值
         }
@@ -123,13 +123,13 @@ class GAknapsack {
           maxFitness = fitness; // 目前最大Fitness
           solution = chromosome.clone(); // 目前最佳解
         }
-        list.add(new Chromosome(chromosome, fitness, 0));
+        popList.add(new Chromosome(chromosome, fitness, 0));
         count++;
       }
       System.out.println(count);
     }
     // Population產生後要依據 Fitness 做排序(小->大)
-    mergeSort(list, 0, popSize - 1);
+    mergeSort(popList, 0, popSize - 1);
   }
 
   // evolution (產生下一代)
@@ -138,8 +138,8 @@ class GAknapsack {
     ArrayList<Chromosome> newList = new ArrayList<>();
     for (int i = 0; i < popSize / 2; i++) {
       // select parent
-      int chromosome1[] = list.get(selection()).chromosome;
-      int chromosome2[] = list.get(selection()).chromosome;
+      int chromosome1[] = popList.get(selection()).chromosome;
+      int chromosome2[] = popList.get(selection()).chromosome;
 
       // Crossover
       int crossChromosome[][] = crossover(chromosome1, chromosome2);
@@ -155,9 +155,9 @@ class GAknapsack {
       int fitness2 = calcFitness(chromosome2);
       // 並放回 Population
       if (fitness1 != 0)
-        list.add(new Chromosome(chromosome1, fitness1, 0));
+        popList.add(new Chromosome(chromosome1, fitness1, 0));
       if (fitness2 != 0)
-        list.add(new Chromosome(chromosome2, fitness2, 0));
+        popList.add(new Chromosome(chromosome2, fitness2, 0));
       if (maxFitness < fitness1) {
         maxFitness = fitness1; // 目前最大Fitness
         solution = chromosome1.clone(); // 目前最佳解
@@ -168,41 +168,39 @@ class GAknapsack {
       }
     }
     // 更新Population(新一代)
-    for (int i = list.size() - 1; i >= list.size() - popSize; i--) {
-      newList.add(list.get(i));
+    for (int i = popList.size() - 1; i >= popList.size() - popSize; i--) {
+      newList.add(popList.get(i));
     }
-    System.out.println(newList.size() + " " + list.size());
-    list = newList;
+    System.out.println(newList.size() + " " + popList.size());
+    popList = newList;
     // Population產生後要依據 Fitness 做排序(小->大)
-    mergeSort(list, 0, list.size() - 1);
+    mergeSort(popList, 0, popList.size() - 1);
   }
 
   // Selection (輪盤選擇法)
   private int selection() {
-    double probability = 0;
+    double probability = 0; // 機率
     double totalSum = 0; // 全部 Fitness 總和的變數
-    double randNum = 0; // 0~1 中隨機取得亂數的變數
+    double randNum = random(0, 1); // 0~1 中隨機取得亂數的變數
     double partialSum = 0; // 目前機率加總的變數
 
     // 計算所有的 Fitness 總和
     for (int i = 0; i < popSize; i++) {
-      totalSum += list.get(i).fitness;
+      totalSum += popList.get(i).fitness;
     }
 
     // 計算每個的機率
     for (int i = 0; i < popSize; i++) {
-      probability = list.get(i).fitness / totalSum;
-      list.set(i, new Chromosome(list.get(i).chromosome, list.get(i).fitness, probability));
+      probability = popList.get(i).fitness / totalSum;
+      popList.set(i, new Chromosome(popList.get(i).chromosome, popList.get(i).fitness, probability));
     }
 
-    randNum = Math.random();
     // partialSum 機率依據加總直到隨機挑選出來的 randNum 小於等於 partialSum
     // 就把所索引值回傳代表選擇到這一個
     // 0~1 中隨機取得亂數(機率)
-    for (int j = list.size() - 1; j >= 0; j--) {
-      partialSum += list.get(j).probability;
+    for (int j = popList.size() - 1; j >= 0; j--) {
+      partialSum += popList.get(j).probability;
       if (randNum <= partialSum) {
-
         return j;
       }
     }
@@ -213,7 +211,7 @@ class GAknapsack {
   private int calcFitness(int[] chromosome) {
     int weight = 0;
     int value = 0;
-    for (int i = 0; i < xySize; i++) {
+    for (int i = 0; i < geneSize; i++) {
       if (chromosome[i] == 1) {
         weight += itemList.get(i).weight; // 計算每個位元是否吻合key每一個值
         value += itemList.get(i).value; // 計算 value 物品價值
@@ -229,12 +227,12 @@ class GAknapsack {
 
   // Crossover (交配)
   private int[][] crossover(int[] c1, int[] c2) {
-    int chromosome[][] = new int[2][xySize];
+    int chromosome[][] = new int[2][geneSize];
 
-    int crossoverNum = randomInt(0, xySize - 1); // crossover次數
+    int crossoverNum = randomInt(0, geneSize - 1); // crossover次數
     for (int i = 0; i < crossoverNum; i++) {
       // 每次選擇一個基因交換，一共交換 crossoverNum 次。
-      int exIndex = randomInt(0, xySize - 1);
+      int exIndex = randomInt(0, geneSize - 1);
       int gene = c1[exIndex];
       c1[exIndex] = c2[exIndex];
       c2[exIndex] = gene;
@@ -256,7 +254,7 @@ class GAknapsack {
   // 列出所有 Population
   private void print() {
     for (int i = 0; i < popSize; i++) {
-      System.out.println(Arrays.toString(list.get(i).chromosome) + "  " + list.get(i).fitness);
+      System.out.println(Arrays.toString(popList.get(i).chromosome) + "  " + popList.get(i).fitness);
     }
   }
 
@@ -276,7 +274,7 @@ class GAknapsack {
     int index = left; // 位移起始點
     int origin_left = left; // 將最左邊的變數儲存起來(最後搬移元素會用到)
     for (int i = 0; i < right + 1; i++)
-      temp.add(new Chromosome(new int[xySize], 0, 0));
+      temp.add(new Chromosome(new int[geneSize], 0, 0));
 
     while ((left <= left_end) && (mid <= right)) { // 左右兩串列比大小依序放入temp串列中儲存
       if (list.get(left).fitness <= list.get(mid).fitness)
@@ -332,7 +330,7 @@ public class Knapsack {
     // Genetic Alogrithm
     ArrayList<Chromosome> list = new ArrayList<>();
     // Population、突變率、演化幾代、Population 數量
-    GAknapsack gaKey = new GAknapsack(itemList, list, N, maxWeight, 0.1, 1000, 100);
+    GAknapsack gaKey = new GAknapsack(itemList, list, N, maxWeight, 0.1, 0, 100);
     gaKey.GArun();
 
   }
