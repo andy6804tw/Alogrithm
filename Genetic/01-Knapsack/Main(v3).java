@@ -38,10 +38,9 @@ class GAknapsack {
   int maxFitness = 0; // 最大 Fitness
   int[] solution; // 最佳解
 
-  public GAknapsack(ArrayList<Item> itemList, ArrayList<Chromosome> popList, int N, int maxWeight, double mutationRate,
-      int maxGen, int popSize) {
+  public GAknapsack(ArrayList<Item> itemList, int N, int maxWeight, double mutationRate, int maxGen, int popSize) {
     this.itemList = itemList;
-    this.popList = popList = new ArrayList<>();
+    this.popList = new ArrayList<>();
     this.geneSize = N; // 基因的數量經由背包物品的總數量得出
     this.maxWeight = maxWeight;
     this.mutationRate = mutationRate;
@@ -61,7 +60,6 @@ class GAknapsack {
 
   // 執行GA演算法
   public void GArun() {
-    int count = 0, maxValue = 0, genCount = 0;
     // 隨機產生Population 傳入值代表有多少基因(Population)以及染色體的(Chromosome)基因個數
     initPopulation(popSize, geneSize);
     print();
@@ -72,9 +70,13 @@ class GAknapsack {
         evolution(popSize);
         print();
       }
+      System.out.println("\n|  Population Size  |   Mutate Rate   | Max Generation |");
+      System.out.println("----------------------------------------------------------");
+      System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), maxGen);
     }
     // 若maxGen=0時，則連續100代的最佳值都相同時當作收斂故跳出迴圈
     else {
+      int count = 0, maxValue = 0, genCount = 0;
       while (true) {
         System.out.println("--------- Generation " + (genCount) + " ---------");
         evolution(popSize);
@@ -89,12 +91,13 @@ class GAknapsack {
           break;
         genCount++;
       }
+      System.out.println("\n|  Population Size  |   Mutate Rate   |");
+      System.out.println("-----------------------------------------");
+      // System.out.printf("%10d %20s\n", popSize, Double.toString(mutationRate));
+      System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), genCount);
     }
 
-    System.out.println("\n|  Population Size  |   Mutate Rate   | Max Generation |");
-    System.out.println("----------------------------------------------------------");
-    System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), maxGen == 0 ? genCount : maxGen);
-    // 印出 GA 後找出來的最佳 Key
+    // 印出 GA 後找出來的最佳解
     System.out.print("\nSolution => ");
     for (int i = 0; i < geneSize; i++)
       System.out.print(solution[i] + " ");
@@ -133,7 +136,7 @@ class GAknapsack {
   private void evolution(int popSize) {
     // new Population
     ArrayList<Chromosome> newList = new ArrayList<>();
-    for (int i = 0; i < popSize / 2; i++) {
+    for (int i = 0; i < popSize; i += 2) {
       // select parent
       int chromosome1[] = popList.get(selection()).chromosome;
       int chromosome2[] = popList.get(selection()).chromosome;
@@ -226,7 +229,6 @@ class GAknapsack {
   // Crossover (交配)
   private int[][] crossover(int[] c1, int[] c2) {
     int chromosome[][] = new int[2][geneSize];
-
     int crossoverNum = randomInt(0, geneSize - 1); // crossover次數
     for (int i = 0; i < crossoverNum; i++) {
       // 每次選擇一個基因交換，一共交換 crossoverNum 次。
@@ -325,10 +327,8 @@ public class Knapsack {
       System.out.printf("%4d %8d %8d %7d\n", itemList.get(i).item, itemList.get(i).weight, itemList.get(i).value,
           itemList.get(i).unit);
     }
-    // Genetic Alogrithm
-    ArrayList<Chromosome> list = new ArrayList<>();
     // Population、突變率、演化幾代、Population 數量
-    GAknapsack gaKey = new GAknapsack(itemList, list, N, maxWeight, 0.15, 0, 100);
+    GAknapsack gaKey = new GAknapsack(itemList, N, maxWeight, 0.15, 1000, 100);
     gaKey.GArun();
 
   }
