@@ -50,7 +50,7 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
     int weight <- 0
     int value <- 0
     for (i 0 to geneSize-1) {
-        if (chromosome[i] == 1) {
+        if (chromosome[i] equal 1) {
             // weight 物品重量
             weight += GET weight in itemList
             //  profit 物品價值
@@ -58,7 +58,7 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
         }
     }
 
-    if (weight > maxWeight)
+    if (weight is better than maxWeight)
         return 0;
     else {
         return value;
