@@ -102,10 +102,36 @@ int selection(ArrayList popList) {
 ### Crossover
 所謂 Crossover(交叉) 是指對兩個(父、母代)相互配對的染色體依據交叉率相互交換其部分基因，從而形成新的個體。Crossover 在 GA 演算法中是產生新個體子代的主要方法。
 
+```java=
+int[][] crossover(int[] chromosome1, int[] chromosome2) {
+    int chromosome[][] <- new int[2][geneSize];
+    // crossover次數
+    int crossoverNum <- randomInt(0, geneSize - 1); 
+    for (i = 0 to crossoverNum-1) {
+        // 每次選擇一個基因交換，一共交換 crossoverNum 次。
+        int exIndex <- randomInt(0, geneSize - 1);
+        int gene <- c1[exIndex];
+        chromosome1[exIndex] <- c2[exIndex];
+        chromosome2[exIndex] <- gene;
+
+    }
+    chromosome[0] <- chromosome1;
+    chromosome[1] <- chromosome2;
+    return chromosome;
+}
+```
 
 
 ### Mutation
 在演化的過程中有一定的機率突變，突變的時機在當父母繁殖 Crossover 後產生出來的新子代，此時新的子代經由突變率會有一定的機率突變。這裡突變的方式是隨機將某一個基因做交換(0變1;1變0)。
 
+```java=
+int[] mutate(int[] chromsome) {
+    // 隨機挑選一位1變0 0變1
+    int index <- randomInt(0, chromsome.length - 1);
+    chromsome[index] = 1 - chromsome[index];
+    return chromsome;
+}
+```
 
 ### Survivor Selection
