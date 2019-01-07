@@ -49,12 +49,12 @@ void initPopulation(ArrayList popList,int popSize, int geneSize) {
 int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
     int weight <- 0
     int value <- 0
-    for (i 0 to geneSize-1) {
+    for (i = 0 to geneSize-1) {
         if (chromosome[i] equal 1) {
             // weight 物品重量
-            weight += GET weight in itemList
+            weight <- GET each weight in itemList
             //  profit 物品價值
-            value += GET profit in itemList 
+            value <- GET each profit in itemList 
         }
     }
 
@@ -69,6 +69,33 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
 
 ### Selection
 選擇父代與母代染色體來產生下一代，這邊選擇的方式使用 `輪盤選擇法` (Roulette Wheel Selection) 來實作。所謂的輪盤選擇法就是在整個族群中，每個個體存活下來或是可以產生後代的機率和個體的適應值分數成正比。也就是說 Fintness 越大的個體存活下來被選擇到的機率就越大，但弱勢個體也有存活的可能，不是絕對的淘汰。就想像個體放在飛標靶上，而個體分數就對應到個體擁有的標靶面積。
+
+```java=
+int selection(ArrayList popList) {
+    double probability <- 0 // 機率
+    double totalSum <- 0 // 全部 Fitness 總和的變數
+    double randNum <- random(0, 1) // 0~1 中隨機取得亂數的變數
+    double partialSum <- 0 // 目前機率加總的變數
+
+    // 計算所有的 Fitness 總和
+    for (i = 0 to popSize-1) {
+        totalSum <- GET each fitness in popList
+    }
+    // 計算每個的機率
+    for (i = 0 to popSize-1) {
+        probability <- (GET each fitness in popList) / totalSum;
+    }
+    // partialSum 機率依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
+    // 就把所索引值回傳表示選擇到這一個
+    for (i = 0 to popSize-1) {
+        partialSum <- GET each probability in popList;
+        if (randNum less than or equal to partialSum) {
+            return i;
+        }
+    }
+    return 0;
+}
+```
 
 
 
