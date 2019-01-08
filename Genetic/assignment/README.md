@@ -28,7 +28,7 @@ void initPopulation(ArrayList popList,int popSize, int geneSize) {
         int chromosome[]
         for  (j = 0 to geneSize-1) {
             // 隨機給定一個0或1值
-            chromosome[j] <- Randomly pick 0 or 1
+            chromosome[j] <- Random select 0 or 1
         }
         // 檢查重量是否超出設定的最大重量W
         if (weight less than or equal to max weight) {
@@ -70,21 +70,21 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
 int selection(ArrayList popList) {
     double probability <- 0 // 機率
     double totalSum <- 0 // 全部 Fitness 總和的變數
-    double randNum <- random(0, 1) // 0~1 中隨機取得亂數的變數
-    double partialSum <- 0 // 目前機率加總的變數
+    double randNum <- Randomly generate decimals between 0 and 1 // 0~1亂數
+    double partialSum <- 0 // 目前機率總和
 
     // 計算所有的 Fitness 總和
     for (i = 0 to popSize-1) {
-        totalSum <- GET each fitness in popList
+        totalSum <- GET i-th fitness in popList
     }
     // 計算每個的機率
     for (i = 0 to popSize-1) {
-        probability <- (GET each fitness in popList) / totalSum;
+        popList.get(i).probability <- (GET i-th fitness in popList) / totalSum
     }
     // partialSum 機率依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
     // 就把所索引值回傳表示選擇到這一個
     for (i = 0 to popSize-1) {
-        partialSum <- GET each probability in popList;
+        partialSum <- GET i-th probability in popList;
         if (randNum less than or equal to partialSum) {
             return i;
         }
