@@ -46,17 +46,14 @@ void initPopulation(ArrayList popList,int popSize, int geneSize) {
 
 ```java=
 int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
-    int weight <- 0
-    int profit <- 0
+    int weight <- 0 // 物品總重量
+    int profit <- 0 // 物品總價值
     for (i = 0 to geneSize-1) {
         if (chromosome[i] equal 1) {
-            // weight 物品重量
-            weight <- GET each weight in itemList
-            //  profit 物品價值
-            profit <- GET each profit in itemList 
+            weight <- GET i-th weight in itemList
+            profit <- GET i-th profit in itemList 
         }
     }
-
     if (weight is better than maxWeight)
         return 0
     else {
