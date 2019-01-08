@@ -25,14 +25,13 @@ void initPopulation(ArrayList popList,int popSize, int geneSize) {
     // 隨機產生 popSize 個染色體
     while (i less than popSize) {
         // 每一個染色體內的基因亂數隨機產生
-        int chromosome[] <- new int[geneSize]
+        int chromosome[]
         for  (j = 0 to geneSize-1) {
-            // 隨機給定一個0,1值
-            chromosome[j] <- randomInt(0, 1)
+            // 隨機給定一個0或1值
+            chromosome[j] <- Randomly pick 0 or 1
         }
         // 檢查重量是否超出設定的最大重量W
-        int fitness <- calcFitness(chromosome)
-        if (fitness not equal to 0) {
+        if (weight less than or equal to max weight) {
             popList.add(chromosome)
             i++
         }
@@ -48,20 +47,20 @@ void initPopulation(ArrayList popList,int popSize, int geneSize) {
 ```java=
 int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
     int weight <- 0
-    int value <- 0
+    int profit <- 0
     for (i = 0 to geneSize-1) {
         if (chromosome[i] equal 1) {
             // weight 物品重量
             weight <- GET each weight in itemList
             //  profit 物品價值
-            value <- GET each profit in itemList 
+            profit <- GET each profit in itemList 
         }
     }
 
     if (weight is better than maxWeight)
         return 0
     else {
-        return value
+        return profit
     }
 }
 ```
