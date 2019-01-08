@@ -162,11 +162,11 @@ class GAknapsack {
         solution = chromosome2.clone(); // 目前最佳解
       }
     }
-    // Population產生後要依據 Fitness 做排序(小->大)
+    // Population產生後要依據 Fitness 做排序(大->小)
     mergeSort(popList, 0, popList.size() - 1);
     // 更新Population(新一代)
-    for (int i = popList.size() - 1, count = 0; count < popSize; i--, count++) {
-      if (count < popSize * 0.9)
+    for (int i = 0; i < popSize; i++) {
+      if (i < popSize * 0.9)
         newList.add(popList.get(i));
       else
         newList.add(popList.get(randomInt(0, popList.size() - 1)));
@@ -193,9 +193,8 @@ class GAknapsack {
       popList.set(i, new Chromosome(popList.get(i).chromosome, popList.get(i).fitness, probability));
     }
 
-    // partialSum 機率依據加總直到隨機挑選出來的 randNum 小於等於 partialSum
+    // partialSum 機率依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
     // 就把所索引值回傳代表選擇到這一個
-    // 0~1 中隨機取得亂數(機率)
     for (int i = 0; i < popList.size(); i++) {
       partialSum += popList.get(i).probability;
       if (randNum <= partialSum) {
@@ -228,7 +227,7 @@ class GAknapsack {
     int chromosome[][] = new int[2][geneSize];
     int crossoverNum = randomInt(0, geneSize - 1); // crossover次數
     for (int i = 0; i < crossoverNum; i++) {
-      // 每次選擇一個基因交換，一共交換 crossoverNum 次。
+      // 次隨機選擇一個基因交換，一共交換 crossoverNum 次。
       int exIndex = randomInt(0, geneSize - 1);
       int gene = c1[exIndex];
       c1[exIndex] = c2[exIndex];
@@ -274,7 +273,7 @@ class GAknapsack {
       temp.add(new Chromosome(new int[geneSize], 0, 0));
 
     while ((left <= left_end) && (mid <= right)) { // 左右兩串列比大小依序放入temp串列中儲存
-      if (list.get(left).fitness <= list.get(mid).fitness)
+      if (list.get(left).fitness >= list.get(mid).fitness)
         temp.add(index++, list.get(left++));
       else
         temp.add(index++, list.get(mid++));
@@ -329,6 +328,3 @@ public class Knapsack {
     gaKnapsack.GArun();
   }
 }
-
-
-
