@@ -21,18 +21,18 @@
 
 ```java=
 void initPopulation(ArrayList popList,int popSize, int geneSize) {
-    // 隨機產生 popSize 個染色體
     int i <- 0
-    while (i < popSize) {
+    // 隨機產生 popSize 個染色體
+    while (i less than popSize) {
         // 每一個染色體內的基因亂數隨機產生
         int chromosome[] <- new int[geneSize]
-        for  j (0 to geneSize-1) {
+        for  (j = 0 to geneSize-1) {
             // 隨機給定一個0,1值
             chromosome[j] <- randomInt(0, 1)
         }
         // 檢查重量是否超出設定的最大重量W
         int fitness <- calcFitness(chromosome)
-        if (fitness != 0) {
+        if (fitness not equal to 0) {
             popList.add(chromosome)
             i++
         }
@@ -59,9 +59,9 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
     }
 
     if (weight is better than maxWeight)
-        return 0;
+        return 0
     else {
-        return value;
+        return value
     }
 }
 ```
@@ -108,7 +108,7 @@ int[][] crossover(int[] chromosome1, int[] chromosome2) {
     // crossover次數
     int crossoverNum <- randomInt(0, geneSize - 1); 
     for (i = 0 to crossoverNum-1) {
-        // 每次選擇一個基因交換，一共交換 crossoverNum 次。
+        // 每次隨機選擇一個基因交換，一共交換 crossoverNum 次。
         int exIndex <- randomInt(0, geneSize - 1);
         int gene <- c1[exIndex];
         chromosome1[exIndex] <- c2[exIndex];
@@ -135,3 +135,21 @@ int[] mutate(int[] chromsome) {
 ```
 
 ### Survivor Selection
+每一代演化後要保留比較好的個體作為下一次演化的 Population ，這裏挑選的方式是。首先排序按照 Fitness 數值由小到大排列，接著從裡面挑選前 90% 大的個體先挑選起來，剩下的 10% 的個體使用亂數隨機挑選。這麼做的原因是要確保我們的最佳解不會落在區域最佳。
+
+```java=
+ArrayList survivorSelect(ArrayList popList, int popSize) {
+    // 依據 Fitness 做排序(大->小)
+    Sort(popList)
+    // new Population
+    ArrayList newList
+    // 前 90% 大的個體先挑選起來，剩下的 10% 的個體使用亂數隨機挑選
+    for (i = 0 to popSize - 1) {
+        if (count less than popSize * 0.9)
+            newList.add(GET chromosome in popList);
+        else
+            newList.add(Random GET chromosome in popList);
+    }
+    return newList
+}
+```
