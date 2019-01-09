@@ -169,9 +169,88 @@ ArrayList survivorSelect(ArrayList popList, int popSize) {
 
 
 ## 程式碼解說
+### Item 類別
+此類別建立是存放的所有的物品，分別記錄著 `item` 物品編號、`profit` 物品的利益值、`weight` 物品的重量。以及建立一個建構子每一次新增一個物品時即初始化並放入 ArrayList 串列中儲存。
+
+```java=
+class Item {
+	int item, profit, weight;
+
+	public Item(int item, int weight, int profit) {
+		this.item = item;
+		this.profit = profit;
+		this.weight = weight;
+	}
+}
+```
+
+### Chromosome 類別
+此類別是紀錄染色體的每個基因，總共有三個變數分別為 `chromosome[]` 存放染色體基因的陣列，這裡是以整數型態的陣列從放基因;接著是 `fitness` 適應值變數，此變數是存放每一組染色體的 `profit` 值;最後一個變數是 `probability` 機率，此變數記錄著該染色體在目前群體中所佔的比例是多少。最後一樣建立建構子當產生新的染色體時並初始化上述所有的變數。
+
+```java=
+class Chromosome {
+	int chromosome[]; // 染色體
+	int fitness; // 適應值(背包重量)
+	double probability; // 機率
+
+	public Chromosome(int[] chromosome, int fitness, double probability) {
+		this.chromosome = chromosome.clone();
+		this.fitness = fitness;
+		this.probability = probability;
+	}
+}
+```
+
+### GAknapsack 類別
+此類別是 Genetic Algorithm 的實例，分別進行Population的初始化以及選擇->交配->突變。由於此類別比較複雜故將每一個 Function 拆開逐一來解釋。
+
+#### 全域變數
+在此類別中分別建立以下變數。第一個為 Population List 使用 ArrayList 儲存每一個 Chromosome(染色體)。第二個為背包的物品依樣是使用 ArrayList 來儲存每一個 Item。第三個為背包的最大重量 `maxWeight` 。第四個是染色體基因數量 `geneSize`。第五個是Population 數量 `popSize`。第六個是突變率 `mutationRate`。第七個是最佳解 `solution[]` 此變數是一個整數的陣列型態記錄著每次演化後的最佳的一組解(染色體)。最後一個變數為 `solFitness` 此變數記錄著最佳解的 Profit 背包物品的利益值。
+```java=
+class GAknapsack {
+    ArrayList < Chromosome > popList; // Population List
+    ArrayList < Item > itemList; // 背包物品
+    int maxWeight; // 背包最大重量
+    int geneSize; // 染色體基因數量
+    int popSize; // Population 數量
+    int maxGen; // 演化代數
+    double mutationRate; // 突變率
+    int[] solution; // 最佳解
+    int solFitness = 0; // 最佳 Fitness
 
 
+    public GAknapsack(ArrayList < Item > itemList, int N, int maxWeight, double mutationRate, int maxGen, int popSize) {
+        this.itemList = itemList;
+        this.popList = new ArrayList < > ();
+        this.geneSize = N; // 基因的數量經由背包物品的總數量得出
+        this.maxWeight = maxWeight;
+        this.mutationRate = mutationRate;
+        this.maxGen = maxGen; // 演化N代 若maxGen=0時，則連續100代的最佳值都相同時當作收斂故跳出迴圈
+        this.popSize = popSize;
+    }
+}
+```
 
+### random() 函式
+此函式是利用 Math 函式庫中的 `random()` 函式來隨機產生a~b間的浮點數，此函式擁有兩個傳入值分別為a(起始值)與b(最終值)，最後將隨機產生出來的浮點數回傳。
+
+```java=
+// 隨機產生a~b間的浮點數
+private double random(int a, int b) {
+    return a + Math.random() * (b - a);
+}
+```
+
+### randomInt() 函式
+此函式跟上述的 `random()` 函式類似只不過是將回傳值強制轉型成整數(int)型態。此函式擁有兩個傳入值分別為a(起始值)與b(最終值)，最後將隨機產生出來的整數回傳。
+
+```java=
+// 隨機產生a~b間的整數
+private int randomInt(int a, int b) {
+    return (int) Math.round(random(a, b));
+}
+```
+ 
 ## 測試
 Input:
 輸入的第一行程式會要求使用者輸入物品數量(N)。第二行輸入最大的背包重量上限(maxWeight)。接著第三行開始會有連續N筆資料輸入，每一行請輸入兩個數值;第一個為物品的重量(weight)、第二個數為此物品的利益值(profit)。
