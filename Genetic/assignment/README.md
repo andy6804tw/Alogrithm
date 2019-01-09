@@ -16,7 +16,7 @@
 
 
 ### Population Initialization
-初始化的方式為建立N個染色體個體並隨機用亂數將每個基因賦予初始值，建立好之後會檢查該筆染色體的組合是否超出設定的最大重量W，若超重則拋棄並重新亂數產生出新的一條染色體;直到數量到達使用者所設定的 Population 的大小即可結束初始化動作。
+初始化的方式為建立N個染色體個體並隨機用亂數將每個基因賦予初始值，建立好之後會檢查該筆染色體的組合是否超出設定的最大重量(W)，若超重則拋棄並重新亂數產生出新的一條染色體;直到數量到達使用者所設定的 Population 的大小即結束初始化。
 
 ![](https://i.imgur.com/bn8BZct.png)
 
@@ -101,7 +101,10 @@ int selection(ArrayList popList) {
 
 
 ### Crossover
-所謂 Crossover(交叉) 是指對兩個(父、母代)配對的染色體相互交換其部分基因，從而形成新的個體。在這邊是使用隨機單點基因交換，並且隨機交換 N 次。
+所謂 Crossover 是指對兩個(父、母代)配對的染色體相互交換其部分基因，從而形成新的個體。在這邊是使用隨機單點基因交換，並且隨機交換 N 次。
+
+![](https://i.imgur.com/SYIZvd7.png)
+
 
 ```java=
 int[][] crossover(int[] chromosome1, int[] chromosome2) {
@@ -125,6 +128,9 @@ int[][] crossover(int[] chromosome1, int[] chromosome2) {
 ### Mutation
 在演化的過程中有一定的機率突變，突變的時機在當父母繁殖 Crossover 後產生出來的新子代，此時新的子代經由突變率會有一定的機率突變。這裡突變的方式是隨機將某一個基因做交換(0變1;1變0)。
 
+![](https://i.imgur.com/FfCKVqa.png)
+
+
 ```java=
 int[] mutate(int[] chromsome) {
     // 隨機挑選一位1變0 0變1
@@ -136,6 +142,9 @@ int[] mutate(int[] chromsome) {
 
 ### Survivor Selection
 每一代演化後要保留比較好的個體作為下一次演化的 Population ，這裏挑選的方式是。首先排序按照 Fitness 數值由小到大排列，接著從裡面挑選前 90% 大的個體先挑選起來，剩下的 10% 的個體使用亂數隨機挑選。這麼做的原因是要確保我們的最佳解不會落在區域最佳。
+
+![](https://i.imgur.com/DMQaNcx.png)
+
 
 ```java=
 ArrayList survivorSelect(ArrayList popList, int popSize) {
