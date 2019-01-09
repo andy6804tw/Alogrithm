@@ -71,12 +71,17 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
 ### Selection
 選擇父代與母代染色體來產生下一代，這邊選擇的方式使用 `輪盤選擇法` (Roulette Wheel Selection) 來實作。所謂的輪盤選擇法就是在整個族群中，每個個體存活下來或是可以產生後代的機率和個體分數成正比。也就是說 Fintness 越大的個體存活下來被選擇到的機率就越大，但弱勢個體也有存活的可能，不是絕對的淘汰。就想像個體放在飛標靶上，而個體分數就對應到個體擁有的標靶面積。
 
+![](https://i.imgur.com/7VAaWal.png)
+![](https://i.imgur.com/8puNZ9N.png)
+
+
+
 ```java=
 int selection(ArrayList popList) {
     double probability <- 0 // 機率
     double totalSum <- 0 // 全部 Fitness 總和的變數
     double randNum <- Randomly generate decimals between 0 and 1 // 0~1亂數
-    double partialSum <- 0 // 目前機率總和
+    double partialSum <- 0 // 累積機率總和
 
     // 計算所有的 Fitness 總和
     for (i = 0 to popSize-1) {
