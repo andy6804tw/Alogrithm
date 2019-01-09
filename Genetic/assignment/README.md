@@ -231,7 +231,7 @@ class GAknapsack {
 }
 ```
 
-### random() 函式
+#### random() 函式
 此函式是利用 Math 函式庫中的 `random()` 函式來隨機產生a-b間的浮點數，此函式擁有兩個傳入值分別為a(起始值)與b(最終值)，最後將隨機產生出來的浮點數回傳。
 
 ```java=
@@ -241,7 +241,7 @@ private double random(int a, int b) {
 }
 ```
 
-### randomInt() 函式
+#### randomInt() 函式
 此函式跟上述的 `random()` 函式類似只不過是將回傳值強制轉型成整數(int)型態。此函式擁有兩個傳入值分別為a(起始值)與b(最終值)，最後將隨機產生出來的整數回傳。
 
 ```java=
@@ -251,7 +251,7 @@ private int randomInt(int a, int b) {
 }
 ```
 
-### initPopulation() 函式
+#### initPopulation() 函式
 基因演算法第一步驟是初始化 Population (隨機產生子代)，傳入值分別有 Population 大小`popSize`，以及染色體基因的長度 `geneSize`。
 
 初始化的方式為建立 `popSize` 個染色體個體並隨機用亂數將每個基因賦予初始值(程式6-9行)，建立好之後會呼叫 `calcFitness()` 計算 Fitness 並檢查該筆染色體的組合是否超出設定的最大重量(maxWeight)，若超重則 `calcFitness()` 函式會回傳 0 因此不將此組染色體放入 Population List 當中並重新亂數產生出新的一條染色體;直到數量到達使用者所設定的 Population 的大小即結束初始化。
@@ -280,7 +280,7 @@ private void initPopulation(int popSize, int geneSize) {
 }
 ```
 
-### calcFitness() 函式
+#### calcFitness() 函式
 在每次繁殖過程中需要計算每個染色體的Fitness(適應值)，在每個染色體的基因串列中1代表該物品要拿，所以就將該物品的重量(Weight)和利益值(Profit)分別記錄並累加起來(程式5-10行)。加總完成後檢查該染色體基因組合的背包重量是否超出設定的最大重量 maxWeight(程式12-16行)，若超重則回傳0;反之回傳總利益值做為該染色體基因組合的 Fitness。
 
 
@@ -304,7 +304,7 @@ private int calcFitness(int[] chromosome) {
 }
 ```
 
-### selection() 函式
+#### selection() 函式
 選擇父代與母代染色體來產生下一代，這邊選擇的方式使用 `輪盤選擇法` (Roulette Wheel Selection) 來實作。所謂的輪盤選擇法就是在整個族群中，每個個體存活下來或是可以產生後代的機率和個體分數成正比。也就是說 Fintness 越大的個體存活下來被選擇到的機率就越大。
 
 首先計算所有的染色體 Fitness 總和並且儲存在 `totalSum`  變數當中(程式9-11行)，接著在分別計算每個染色體在整個群體中所佔有的比例，計算的方式為(目前某一個染色體的Fitness)/totalSum (程式13-16行)。全部的染色體都計算好後接著計算每個Fitness佔有的比例(程式13-16行)。最後依據隨機產撐出來的變數 `randNum` 產生 0-1 之間的小數，進行每一個 Fitness 比例的累加直到隨機挑選出來的 `randNum` 小於等於 `partialSum` 就把目前的所索引值回傳代表此一輪選擇到這個。
@@ -339,7 +339,7 @@ private int selection() {
 }
 ```
 
-### crossover() 函式
+#### crossover() 函式
 所謂 Crossover 是指對兩個(父、母代)配對的染色體相互交換其部分基因，從而形成新的個體。在這邊是使用隨機單點基因交換，並且隨機交換 N 次。
 
 此函式會有兩個參數 `c1`、`c2` 分別代表父代與母代，首先會有一個 `crossoverNum` 變數進行亂數初始化，接著進入迴圈每次隨機選擇一個基因交換，一共交換 crossoverNum 次，並且每一次做單點的基因交換。
@@ -360,12 +360,211 @@ private int[][] crossover(int[] c1, int[] c2) {
     return chromosome;
 }
 ```
-### mutation() 函式
+#### mutation() 函式
+在演化的過程中有一定的機率突變，突變的時機在當父母繁殖 Crossover 後產生出來的新子代，此時新的子代經由突變率會有一定的機率突變。這裡突變的方式是隨機將某一個基因做交換(0變1;1變0)。
 
 ```java=
+// Mutation (突變)
+private int[] mutation(int[] chromsome) {
+    // 隨機挑選一個基因1變0 0變1
+    int index = randomInt(0, chromsome.length - 1);
+    chromsome[index] = 1 - chromsome[index];
+    return chromsome;
+}
+```
 
+#### evolution() 函式
+此函式為 repopulation 實例進行演化，分別處理 `Select` (程式11-18行) 進行輪盤選擇法挑選父代與母代，接著進行 `Crossover` 隨機做單點交換(程式10-13行)，交叉完成後隨著突變率有一定的機率突變(程式15-18行)。上述三個動作都完成後進行 Fitness 計算並檢查此染色體是否超重，若沒超重則將染色體放回去 Population List 中(程式碼23-26)。
+
+最後每一代演化後要保留比較好的個體作為下一次演化的 Population ，這裏挑選的方式是。首先排序按照 Fitness 數值由小到大排列，接著從裡面挑選前 90% 大的個體先挑選起來，剩下的 10% 的個體使用亂數隨機挑選。這麼做的原因是要確保我們的最佳解不會落在區域最佳(程式碼37-45)。
+
+```java=
+// evolution (演化新子代)
+private void evolution(int popSize) {
+    // new Population
+    ArrayList < Chromosome > newList = new ArrayList < > ();
+    for (int i = 0; i < popSize; i++) {
+        // Select parent
+        int chromosome1[] = popList.get(selection()).chromosome.clone();
+        int chromosome2[] = popList.get(selection()).chromosome.clone();
+
+        // Crossover
+        int crossChromosome[][] = crossover(chromosome1, chromosome2);
+        chromosome1 = crossChromosome[0].clone();
+        chromosome2 = crossChromosome[1].clone();
+        // 有一定機率突變
+        if (random(0, 1) < this.mutationRate) {
+            chromosome1 = mutation(chromosome1).clone();
+            chromosome2 = mutation(chromosome2).clone();
+        }
+        // fitness計算
+        int fitness1 = calcFitness(chromosome1);
+        int fitness2 = calcFitness(chromosome2);
+        // 若沒超重則放回 Population
+        if (fitness1 != 0)
+            popList.add(new Chromosome(chromosome1.clone(), fitness1, 0));
+        if (fitness2 != 0)
+            popList.add(new Chromosome(chromosome2.clone(), fitness2, 0));
+        if (solFitness < fitness1) {
+            solFitness = fitness1; // 目前最大Fitness
+            solution = chromosome1.clone(); // 目前最佳解
+        }
+        if (solFitness < fitness2) {
+            solFitness = fitness2; // 目前最大Fitness
+            solution = chromosome2.clone(); // 目前最佳解
+        }
+    }
+    // 依據 Fitness 做排序(大->小)
+    mergeSort(popList, 0, popList.size() - 1);
+    // 前 90% 大的個體先挑選起來，剩下的 10% 的個體使用亂數隨機挑選
+    for (int i = 0; i < popSize; i++) {
+        if (i < popSize * 0.9)
+            newList.add(popList.get(i));
+        else
+            newList.add(popList.get(randomInt(0, popList.size() - 1)));
+    }
+    popList = newList;
+}
 ```
  
+#### mergeSort() 排序函式
+由於每次演化後要挑選比較好的子代做為下一次演化的依據，所以我們要先將每個染色體內的 Fitness 由大到小做排序，這邊排序是使用 Merge Sort 合併排序實作。
+
+```java=
+// 合併排序
+private void mergeSort(ArrayList < Chromosome > list, int left, int right) {
+    if (left < right) { // 當左邊大於右邊時代表只剩一個元素了
+        int mid = (left + right) / 2; // 每次對切，切到只剩一個為止
+        mergeSort(list, left, mid); // 左邊等份
+        mergeSort(list, mid + 1, right); // 右邊等份
+        Merge(list, left, mid + 1, right); // 排序且合併
+    }
+}
+
+private void Merge(ArrayList < Chromosome > list, int left,
+int mid, int right) {
+    // 建立一個temp串列存放排序後的值
+    ArrayList < Chromosome > temp = new ArrayList < > (); 
+    int left_end = mid - 1; // 左邊最後一個位置
+    int index = left; // 位移起始點
+    int origin_left = left; // 將最左邊的變數儲存起來(最後搬移元素會用到)
+    for (int i = 0; i < right + 1; i++)
+        temp.add(new Chromosome(new int[geneSize], 0, 0));
+
+    while ((left <= left_end) && (mid <= right)) { 
+    // 左右兩串列比大小依序放入temp串列中儲存
+        if (list.get(left).fitness >= list.get(mid).fitness)
+            temp.add(index++, list.get(left++));
+        else
+            temp.add(index++, list.get(mid++));
+    }
+
+    if (left <= left_end) { 
+    // 若左邊的串列尚未走完將剩餘的數值依序放入temp串列中
+        while (left <= left_end) {
+            temp.add(index++, list.get(left++));
+        }
+    } else { 
+    // 反之若右邊的串列尚未走完將剩餘的數值依序放入temp串列中
+        while (mid <= right) {
+            temp.add(index++, list.get(mid++));
+        }
+    }
+    // 最後將排序好的temp串列複製到list串列中
+    for (int i = origin_left; i <= right; i++) {
+        list.set(i, temp.get(i));
+    }
+
+}
+```
+
+#### GArun() 函式
+此函式是主程式中被呼叫基因演算法執行的函式，首先會進行 Population 初始化動作(程式第4行)。接著程式6-13行進行演化選擇->交配->突變 (循環重複到 maxGen 代)，此外若 maxGen=0 時，則會檢查連續100代的最佳值都相同時當作收斂故跳出迴圈。
+
+最後是輸出結果，會顯示此次GA執行的參數設定，這裡會依序列出群體大小、突變率、以及終止條件(演化最大代數)。接著印出GA後的結果第一行為此次執行最佳的一組染色體(Chromosome);接著輸出最佳解的背包物品組合;最後則是背包內商品的最大利益值。
+
+```java=
+//執行GA演算法
+public void GArun() {
+ // 隨機產生 Population 傳入值代表有多少基因(Population)以及染色體的(Chromosome)基因個數
+ initPopulation(popSize, geneSize);
+ // 選擇->交配->突變 (循環重複到 maxGen 代)
+ if (maxGen != 0) {
+     for (int i = 0; i < maxGen; i++) {
+         evolution(popSize);
+     }
+     System.out.println("\n|  Population Size  |   Mutate Rate   | Max Generation |");
+     System.out.println("--------------------------------------------------------");
+     System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), maxGen);
+ }
+ // 若maxGen=0時，則連續100代的最佳值都相同時當作收斂故跳出迴圈
+ else {
+     int count = 0, maxProfit = 0, genCount = 0;
+     while (true) {
+         evolution(popSize);
+         if (maxProfit == solFitness) {
+             count++;
+         } else {
+             maxProfit = solFitness;
+             count = 0;
+         }
+         if (count > 100)
+             break;
+         genCount++;
+     }
+     System.out.println("\n|  Population Size  |   Mutate Rate   | Max Generation |");
+     System.out.println("--------------------------------------------------------");
+     System.out.printf("%10d %20s %15d\n", popSize, Double.toString(mutationRate), genCount);
+ }
+
+ // 印出 GA 後找出來的最佳解
+ System.out.print("\nSolution => ");
+ for (int i = 0; i < geneSize; i++)
+     System.out.print(solution[i] + " ");
+ // 列出背包的物品
+ System.out.print("\nKnapsack Item => ");
+ for (int i = 0; i < geneSize; i++) {
+     if (solution[i] == 1)
+         System.out.print(itemList.get(i).item + " ");
+ }
+ // 印出 GA 後找出來的最佳 Fitness
+ System.out.println("\nProfit: " + solFitness);
+}
+```
+
+### main() 主函式
+在主函式中首先要求使用者輸入背包內容，輸入的第一行程式會要求使用者輸入物品數量(N)。第二行輸入最大的背包重量上限(maxWeight)。接著第三行開始會有連續N筆資料輸入，每一行請輸入兩個數值;第一個為物品的重量(weight)、第二個數為此物品的利益值(profit)。
+
+接著程式第23行呼叫 GAknapsack 類別變數並初始化執行基因演算法，參數分別放入物品、物品數量、背包最大承重、突變率、演化代數、Population 數量。其中突變率、演化代數、Population 數量可以依照使用者喜好手動調整參數，若演化代數輸入0則終止條件會檢查連續100代的最佳值都相同時當作收斂故跳出迴圈並列印出結果。
+
+```java=
+public static void main(String[] args) {
+    Scanner scn = new Scanner(System.in);
+    itemList = new ArrayList < > ();
+    System.out.print("請輸入物品數量: ");
+    N = Integer.parseInt(scn.nextLine());
+    System.out.print("請輸入最大重量上限: ");
+    maxWeight = Integer.parseInt(scn.nextLine());
+    int weight = 0, profit = 0, unit = 0;
+    System.out.println("請每行依序輸入每個物品的Weight 和 Profit(以空白隔開): ");
+    for (int i = 0; i < N; i++) {
+        String arr[] = scn.nextLine().split(" ");
+        weight = Integer.parseInt(arr[0]);
+        profit = Integer.parseInt(arr[1]);
+        itemList.add(new Item(i + 1, weight, profit));
+    }
+
+    System.out.println("\n| Item | Weight | Profit |");
+    System.out.println("--------------------------");
+    for (int i = 0; i < N; i++) {
+        System.out.printf("%4d %8d %8d\n", itemList.get(i).item, itemList.get(i).weight, itemList.get(i).profit);
+    }
+    // 物品、物品數量、背包最大承重、突變率、演化代數、Population 數量
+    GAknapsack gaKnapsack = new GAknapsack(itemList, N, maxWeight, 0.15, 1000, 100);
+    gaKnapsack.GArun();
+}
+```
+  
 ## 測試
 Input:
 輸入的第一行程式會要求使用者輸入物品數量(N)。第二行輸入最大的背包重量上限(maxWeight)。接著第三行開始會有連續N筆資料輸入，每一行請輸入兩個數值;第一個為物品的重量(weight)、第二個數為此物品的利益值(profit)。
