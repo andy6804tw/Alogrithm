@@ -95,10 +95,10 @@ int selection(ArrayList popList) {
     for (i = 0 to popSize-1) {
         partialSum <- GET i-th probability in popList;
         if (randNum less than or equal to partialSum) {
-            return i;
+            return i
         }
     }
-    return 0;
+    return 0
 }
 ```
 
@@ -159,10 +159,94 @@ ArrayList survivorSelect(ArrayList popList, int popSize) {
     // 前 90% 大的個體先挑選起來，剩下的 10% 的個體使用亂數隨機挑選
     for (i = 0 to popSize - 1) {
         if (i less than (popSize * 0.9))
-            newList.add(GET i-th chromosome in popList);
+            newList.add(GET i-th chromosome in popList)
         else
-            newList.add(Randomly GET chromosome in popList);
+            newList.add(Randomly GET chromosome in popList)
     }
     return newList
 }
 ```
+
+
+## 程式碼解說
+
+
+
+## 測試
+input:
+輸入的第一行程式會要求使用者輸入物品數量(N)。第二行輸入最大的背包重量上限(maxWeight)。接著第三行開始會有連續N筆資料輸入，每一行請輸入兩個數值;第一個為物品的重量(weight)、第二個數為此物品的利益值(profit)。
+
+- 測試1
+
+測資:
+```
+11
+30
+3 9
+2 5
+5 14
+4 11
+6 16
+3 8
+4 13
+1 3
+7 15
+8 23
+9 29
+```
+
+![](https://i.imgur.com/7hcI9mY.png)
+
+
+Profit: 9+14+13+3+23+29 = 91
+
+- 測試2
+
+測資:
+```
+20
+6844
+1999 1
+901 4
+2227 5
+532 4
+3554 4
+1815 5
+3292 2
+3093 4
+2442 3
+393 2
+3657 5
+3694 4
+2283 5
+366 5
+3626 2
+3924 2
+81 3
+3570 3
+551 2
+124 1
+```
+
+![](https://i.imgur.com/fTrPfHh.png)
+
+
+Profit: 4+5+4+5+2+5+3+1 = 29
+
+- 測試三
+
+測資:
+```
+6
+30
+15 15
+3 7
+2 10
+5 5
+9 8
+20 17
+```
+
+![](https://i.imgur.com/Dy7azIL.png)
+
+Profit: 15+7+10+8 = 40
