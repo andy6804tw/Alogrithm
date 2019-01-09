@@ -136,7 +136,7 @@ int[][] crossover(int[] chromosome1, int[] chromosome2) {
 
 
 ```java=
-int[] mutate(int[] chromsome) {
+int[] mutation(int[] chromsome) {
     // 隨機挑選一位1變0 0變1
     int index <- Randomly generate an integer between 0 and chromosome length-1
     chromsome[index] = 1 - chromsome[index]
@@ -337,6 +337,33 @@ private int selection() {
     }
     return 0;
 }
+```
+
+### crossover() 函式
+所謂 Crossover 是指對兩個(父、母代)配對的染色體相互交換其部分基因，從而形成新的個體。在這邊是使用隨機單點基因交換，並且隨機交換 N 次。
+
+此函式會有兩個參數 `c1`、`c2` 分別代表父代與母代，首先會有一個 `crossoverNum` 變數進行亂數初始化，接著進入迴圈每次隨機選擇一個基因交換，一共交換 crossoverNum 次，並且每一次做單點的基因交換。
+
+```java=
+private int[][] crossover(int[] c1, int[] c2) {
+    int chromosome[][] = new int[2][geneSize];
+    int crossoverNum = randomInt(0, geneSize - 1); // 亂數決定crossover次數
+    for (int i = 0; i < crossoverNum; i++) {
+        // 每次隨機選擇一個基因交換，一共交換 crossoverNum 次。
+        int exIndex = randomInt(0, geneSize - 1);
+        int tempGene = c1[exIndex];
+        c1[exIndex] = c2[exIndex];
+        c2[exIndex] = tempGene;
+    }
+    chromosome[0] = c1;
+    chromosome[1] = c2;
+    return chromosome;
+}
+```
+### mutation() 函式
+
+```java=
+
 ```
  
 ## 測試
