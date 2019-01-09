@@ -15,12 +15,12 @@ class Item {
 class Chromosome {
 	int chromosome[]; // 染色體
 	int fitness; // 適應值(背包重量)
-	double probability; // 機率
+	double percentage; // 比例
 
-	public Chromosome(int[] chromosome, int fitness, double probability) {
+	public Chromosome(int[] chromosome, int fitness, double percentage) {
 		this.chromosome = chromosome.clone();
 		this.fitness = fitness;
-		this.probability = probability;
+		this.percentage = percentage;
 	}
 }
 
@@ -145,8 +145,8 @@ class GAknapsack {
 			chromosome2 = crossChromosome[1].clone();
 			// 有一定機率突變
 			if (random(0, 1) < this.mutationRate) {
-				chromosome1 = mutate(chromosome1).clone();
-				chromosome2 = mutate(chromosome2).clone();
+				chromosome1 = mutation(chromosome1).clone();
+				chromosome2 = mutation(chromosome2).clone();
 			}
 			// fitness計算
 			int fitness1 = calcFitness(chromosome1);
@@ -178,25 +178,25 @@ class GAknapsack {
 	}
 	// Selection (輪盤選擇法)
 	private int selection() {
-		double probability = 0; // 機率
+		double percentage = 0; // 比例
 		double totalSum = 0; // 全部 Fitness 總和變數
 		double randNum = random(0, 1); // 隨機產生0~1之間的小數
-		double partialSum = 0; // 累積機率總和
+		double partialSum = 0; // 累積比例總和
 
 		// 計算所有的 Fitness 總和
 		for (int i = 0; i < popSize; i++) {
 			totalSum += popList.get(i).fitness;
 		}
-		// 計算每個的機率
+		// 計算每個Fitness佔有的比例
 		for (int i = 0; i < popSize; i++) {
-			probability = popList.get(i).fitness / totalSum;
-			popList.set(i, new Chromosome(popList.get(i).chromosome.clone(), popList.get(i).fitness, probability));
+			percentage = popList.get(i).fitness / totalSum;
+			popList.set(i, new Chromosome(popList.get(i).chromosome.clone(), popList.get(i).fitness, percentage));
 		}
 
-		// partialSum 機率依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
+		// partialSum 比例依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
 		// 就把所索引值回傳代表選擇到這一個
 		for (int i = 0; i < popList.size(); i++) {
-			partialSum += popList.get(i).probability;
+			partialSum += popList.get(i).percentage;
 			if (randNum <= partialSum) {
 				return i;
 			}
@@ -227,7 +227,7 @@ class GAknapsack {
 		int chromosome[][] = new int[2][geneSize];
 		int crossoverNum = randomInt(0, geneSize - 1); // 亂數決定crossover次數
 		for (int i = 0; i < crossoverNum; i++) {
-			// 次隨機選擇一個基因交換，一共交換 crossoverNum 次。
+			// 每次隨機選擇一個基因交換，一共交換 crossoverNum 次。
 			int exIndex = randomInt(0, geneSize - 1);
 			int tempGene = c1[exIndex];
 			c1[exIndex] = c2[exIndex];
@@ -238,8 +238,8 @@ class GAknapsack {
 		return chromosome;
 	}
 
-	// Mutate (突變)
-	private int[] mutate(int[] chromsome) {
+	// Mutation (突變)
+	private int[] mutation(int[] chromsome) {
 		// 隨機挑選一個基因1變0 0變1
 		int index = randomInt(0, chromsome.length - 1);
 		chromsome[index] = 1 - chromsome[index];
@@ -325,6 +325,45 @@ public class Knapsack {
 		gaKnapsack.GArun();
 	}
 }
+
+/**
+11
+30
+3 9
+2 5
+5 14
+4 11
+6 16
+3 8
+4 13
+1 3
+7 15
+8 23
+9 29
+
+20
+6844
+1999 1
+901 4
+2227 5
+532 4
+3554 4
+1815 5
+3292 2
+3093 4
+2442 3
+393 2
+3657 5
+3694 4
+2283 5
+366 5
+3626 2
+3924 2
+81 3
+3570 3
+551 2
+124 1
+**/
 
 /**
 11
