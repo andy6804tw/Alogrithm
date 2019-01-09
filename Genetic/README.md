@@ -324,6 +324,11 @@ NOT 1           0
 
 ```
 
+## Survivor Selection
+每一代演化後要保留比較好的個體作為下一次演化的 Population ，這裏挑選的方式是。首先排序按照 Fitness 數值由小到大排列，接著從裡面挑選前 90% 大的個體先挑選起來，剩下的 10% 的個體使用亂數隨機挑選。這麼做的原因是要確保我們的最佳解不會落在區域最佳。
+
+https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_survivor_selection.htm
+
 
 ## Reference
 - [遺傳演算法GA(Genetic Algorithm)入門知識梳理](https://codertw.com/%E4%BA%BA%E5%B7%A5%E6%99%BA%E6%85%A7/4400/#outline__1)
