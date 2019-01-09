@@ -79,7 +79,7 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
 int selection(ArrayList popList) {
     double percentage <- 0 // 比例
     double totalSum <- 0 // 全部 Fitness 總和的變數
-    double randNum <- Randomly generate decimals between 0 and 1 // 0~1亂數
+    double randNum <- Randomly generate decimals between 0 and 1 // 0-1亂數
     double partialSum <- 0 // 累積比例總和
 
     // 計算所有的 Fitness 總和
@@ -91,7 +91,7 @@ int selection(ArrayList popList) {
         popList(i).percentage <- (GET i-th fitness in popList) / totalSum
     }
     // partialSum 比例依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
-    // 就把所索引值回傳表示選擇到這一個
+    // 就把所索引值回傳代表此一輪選擇到這個
     for (i = 0 to popSize-1) {
         partialSum <- GET i-th percentage in popList;
         if (randNum less than or equal to partialSum) {
@@ -232,10 +232,10 @@ class GAknapsack {
 ```
 
 ### random() 函式
-此函式是利用 Math 函式庫中的 `random()` 函式來隨機產生a~b間的浮點數，此函式擁有兩個傳入值分別為a(起始值)與b(最終值)，最後將隨機產生出來的浮點數回傳。
+此函式是利用 Math 函式庫中的 `random()` 函式來隨機產生a-b間的浮點數，此函式擁有兩個傳入值分別為a(起始值)與b(最終值)，最後將隨機產生出來的浮點數回傳。
 
 ```java=
-// 隨機產生a~b間的浮點數
+// 隨機產生a-b間的浮點數
 private double random(int a, int b) {
     return a + Math.random() * (b - a);
 }
@@ -245,7 +245,7 @@ private double random(int a, int b) {
 此函式跟上述的 `random()` 函式類似只不過是將回傳值強制轉型成整數(int)型態。此函式擁有兩個傳入值分別為a(起始值)與b(最終值)，最後將隨機產生出來的整數回傳。
 
 ```java=
-// 隨機產生a~b間的整數
+// 隨機產生a-b間的整數
 private int randomInt(int a, int b) {
     return (int) Math.round(random(a, b));
 }
@@ -254,7 +254,7 @@ private int randomInt(int a, int b) {
 ### initPopulation() 函式
 基因演算法第一步驟是初始化 Population (隨機產生子代)，傳入值分別有 Population 大小`popSize`，以及染色體基因的長度 `geneSize`。
 
-初始化的方式為建立 `popSize` 個染色體個體並隨機用亂數將每個基因賦予初始值(程式6~9行)，建立好之後會呼叫 `calcFitness()` 計算 Fitness 並檢查該筆染色體的組合是否超出設定的最大重量(maxWeight)，若超重則 `calcFitness()` 函式會回傳 0 因此不將此組染色體放入 Population List 當中並重新亂數產生出新的一條染色體;直到數量到達使用者所設定的 Population 的大小即結束初始化。
+初始化的方式為建立 `popSize` 個染色體個體並隨機用亂數將每個基因賦予初始值(程式6-9行)，建立好之後會呼叫 `calcFitness()` 計算 Fitness 並檢查該筆染色體的組合是否超出設定的最大重量(maxWeight)，若超重則 `calcFitness()` 函式會回傳 0 因此不將此組染色體放入 Population List 當中並重新亂數產生出新的一條染色體;直到數量到達使用者所設定的 Population 的大小即結束初始化。
 
 ```java=
 // 首次執行初始化 Population (隨機產生子代)
@@ -281,7 +281,7 @@ private void initPopulation(int popSize, int geneSize) {
 ```
 
 ### calcFitness() 函式
-在每次繁殖過程中需要計算每個染色體的Fitness(適應值)，在每個染色體的基因串列中1代表該物品要拿，所以就將該物品的重量(Weight)和利益值(Profit)分別記錄並累加起來(程式5~10行)。加總完成後檢查該染色體基因組合的背包重量是否超出設定的最大重量 maxWeight(程式12~16行)，若超重則回傳0;反之回傳總利益值做為該染色體基因組合的 Fitness。
+在每次繁殖過程中需要計算每個染色體的Fitness(適應值)，在每個染色體的基因串列中1代表該物品要拿，所以就將該物品的重量(Weight)和利益值(Profit)分別記錄並累加起來(程式5-10行)。加總完成後檢查該染色體基因組合的背包重量是否超出設定的最大重量 maxWeight(程式12-16行)，若超重則回傳0;反之回傳總利益值做為該染色體基因組合的 Fitness。
 
 
 ```java=
@@ -307,14 +307,14 @@ private int calcFitness(int[] chromosome) {
 ### selection() 函式
 選擇父代與母代染色體來產生下一代，這邊選擇的方式使用 `輪盤選擇法` (Roulette Wheel Selection) 來實作。所謂的輪盤選擇法就是在整個族群中，每個個體存活下來或是可以產生後代的機率和個體分數成正比。也就是說 Fintness 越大的個體存活下來被選擇到的機率就越大。
 
-首先計算所有的染色體 Fitness 總和並且儲存在 `totalSum`  變數當中(程式9~11行)，接著在分別計算每個染色體在整個群體中所佔有的比例，計算的方式為(目前某一個染色體的Fitness)/totalSum (程式13~16行)。全部的染色體都計算好
+首先計算所有的染色體 Fitness 總和並且儲存在 `totalSum`  變數當中(程式9-11行)，接著在分別計算每個染色體在整個群體中所佔有的比例，計算的方式為(目前某一個染色體的Fitness)/totalSum (程式13-16行)。全部的染色體都計算好後接著計算每個Fitness佔有的比例(程式13-16行)。最後依據隨機產撐出來的變數 `randNum` 產生 0-1 之間的小數，進行每一個 Fitness 比例的累加直到隨機挑選出來的 `randNum` 小於等於 `partialSum` 就把目前的所索引值回傳代表此一輪選擇到這個。
 
 ```java=
 // Selection (輪盤選擇法)
 private int selection() {
     double percentage = 0; // 比例
     double totalSum = 0; // 全部 Fitness 總和變數
-    double randNum = random(0, 1); // 隨機產生0~1之間的小數
+    double randNum = random(0, 1); // 隨機產生0-1之間的小數
     double partialSum = 0; // 累積比例總和
 
     // 計算所有的 Fitness 總和
@@ -328,7 +328,7 @@ private int selection() {
     }
 
     // partialSum 比例依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
-    // 就把所索引值回傳代表選擇到這一個
+    // 就把所索引值回傳代表此一輪選擇到這個
     for (int i = 0; i < popList.size(); i++) {
         partialSum += popList.get(i).percentage;
         if (randNum <= partialSum) {
