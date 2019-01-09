@@ -44,6 +44,9 @@ void initPopulation(ArrayList popList,int popSize, int geneSize) {
 ### Calculation of Fitness
 在每次繁殖過程中需要計算每個染色體的Fitness(適應值)，在每個染色體的基因串列中1代表該物品要拿，所以就將該物品的重量(Weight)和利益值(Profit)分別記錄並累加起來。加總完成後檢查該染色體基因組合的背包重量是否超出設定的最大重量 maxWeight，若超重則回傳0;反之回傳總利益值做為該染色體基因組合的Fitness。
 
+![](https://i.imgur.com/RHmc7uA.png)
+
+
 ```java=
 int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
     int weight <- 0 // 物品總重量
