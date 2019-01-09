@@ -77,23 +77,23 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
 
 ```java=
 int selection(ArrayList popList) {
-    double probability <- 0 // 機率
+    double percentage <- 0 // 比例
     double totalSum <- 0 // 全部 Fitness 總和的變數
     double randNum <- Randomly generate decimals between 0 and 1 // 0~1亂數
-    double partialSum <- 0 // 累積機率總和
+    double partialSum <- 0 // 累積比例總和
 
     // 計算所有的 Fitness 總和
     for (i = 0 to popSize-1) {
         totalSum <- GET i-th fitness in popList
     }
-    // 計算每個的機率
+    // 計算每個Fitness佔有的比例
     for (i = 0 to popSize-1) {
-        popList(i).probability <- (GET i-th fitness in popList) / totalSum
+        popList(i).percentage <- (GET i-th fitness in popList) / totalSum
     }
-    // partialSum 機率依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
+    // partialSum 比例依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
     // 就把所索引值回傳表示選擇到這一個
     for (i = 0 to popSize-1) {
-        partialSum <- GET i-th probability in popList;
+        partialSum <- GET i-th percentage in popList;
         if (randNum less than or equal to partialSum) {
             return i
         }
@@ -185,18 +185,18 @@ class Item {
 ```
 
 ### Chromosome 類別
-此類別是紀錄染色體的每個基因，總共有三個變數分別為 `chromosome[]` 存放染色體基因的陣列，這裡是以整數型態的陣列從放基因;接著是 `fitness` 適應值變數，此變數是存放每一組染色體的 `profit` 值;最後一個變數是 `probability` 機率，此變數記錄著該染色體在目前群體中所佔的比例是多少。最後一樣建立建構子當產生新的染色體時並初始化上述所有的變數。
+此類別是紀錄染色體的每個基因，總共有三個變數分別為 `chromosome[]` 存放染色體基因的陣列，這裡是以整數型態的陣列從放基因;接著是 `fitness` 適應值變數，此變數是存放每一組染色體的 `profit` 值;最後一個變數是 `percentage` 比例，此變數記錄著該染色體在目前群體中所佔的比例是多少。最後一樣建立建構子當產生新的染色體時並初始化上述所有的變數。
 
 ```java=
 class Chromosome {
 	int chromosome[]; // 染色體
 	int fitness; // 適應值(背包重量)
-	double probability; // 機率
+	double percentage; // 比例
 
-	public Chromosome(int[] chromosome, int fitness, double probability) {
+	public Chromosome(int[] chromosome, int fitness, double percentage) {
 		this.chromosome = chromosome.clone();
 		this.fitness = fitness;
-		this.probability = probability;
+		this.percentage = percentage;
 	}
 }
 ```
@@ -248,6 +248,94 @@ private double random(int a, int b) {
 // 隨機產生a~b間的整數
 private int randomInt(int a, int b) {
     return (int) Math.round(random(a, b));
+}
+```
+
+### initPopulation() 函式
+基因演算法第一步驟是初始化 Population (隨機產生子代)，傳入值分別有 Population 大小`popSize`，以及染色體基因的長度 `geneSize`。
+
+初始化的方式為建立 `popSize` 個染色體個體並隨機用亂數將每個基因賦予初始值(程式6~9行)，建立好之後會呼叫 `calcFitness()` 計算 Fitness 並檢查該筆染色體的組合是否超出設定的最大重量(maxWeight)，若超重則 `calcFitness()` 函式會回傳 0 因此不將此組染色體放入 Population List 當中並重新亂數產生出新的一條染色體;直到數量到達使用者所設定的 Population 的大小即結束初始化。
+
+```java=
+// 首次執行初始化 Population (隨機產生子代)
+private void initPopulation(int popSize, int geneSize) {
+    for (int count = 0; count < popSize;) {
+        // Random Chromosome
+        int chromosome[] = new int[geneSize];
+        for (int j = 0; j < geneSize; j++) {
+            int bit = randomInt(0, 1);
+            chromosome[j] = bit; // 隨機給定一個0,1值
+        }
+        int fitness = calcFitness(chromosome); // fitness計算
+        if (fitness != 0) {
+            // 尋找最佳值
+            if (solFitness < fitness) {
+                solFitness = fitness; // 目前最大Fitness
+                solution = chromosome.clone(); // 目前最佳解
+            }
+            popList.add(new Chromosome(chromosome.clone(), fitness, 0));
+            count++;
+        }
+    }
+}
+```
+
+### calcFitness() 函式
+在每次繁殖過程中需要計算每個染色體的Fitness(適應值)，在每個染色體的基因串列中1代表該物品要拿，所以就將該物品的重量(Weight)和利益值(Profit)分別記錄並累加起來(程式5~10行)。加總完成後檢查該染色體基因組合的背包重量是否超出設定的最大重量 maxWeight(程式12~16行)，若超重則回傳0;反之回傳總利益值做為該染色體基因組合的 Fitness。
+
+
+```java=
+// Fitness 計算
+private int calcFitness(int[] chromosome) {
+    int weight = 0;
+    int profit = 0;
+    for (int i = 0; i < geneSize; i++) {
+        if (chromosome[i] == 1) {
+            weight += itemList.get(i).weight; // 物品重量
+            profit += itemList.get(i).profit; // 物品價值
+        }
+    }
+    // 若背包重量超出設定的 maxWeight 就回傳0
+    if (weight > maxWeight)
+        return 0;
+    else {
+        return profit;
+    }
+}
+```
+
+### selection() 函式
+選擇父代與母代染色體來產生下一代，這邊選擇的方式使用 `輪盤選擇法` (Roulette Wheel Selection) 來實作。所謂的輪盤選擇法就是在整個族群中，每個個體存活下來或是可以產生後代的機率和個體分數成正比。也就是說 Fintness 越大的個體存活下來被選擇到的機率就越大。
+
+首先計算所有的染色體 Fitness 總和並且儲存在 `totalSum`  變數當中(程式9~11行)，接著在分別計算每個染色體在整個群體中所佔有的比例，計算的方式為(目前某一個染色體的Fitness)/totalSum (程式13~16行)。全部的染色體都計算好
+
+```java=
+// Selection (輪盤選擇法)
+private int selection() {
+    double percentage = 0; // 比例
+    double totalSum = 0; // 全部 Fitness 總和變數
+    double randNum = random(0, 1); // 隨機產生0~1之間的小數
+    double partialSum = 0; // 累積比例總和
+
+    // 計算所有的 Fitness 總和
+    for (int i = 0; i < popSize; i++) {
+        totalSum += popList.get(i).fitness;
+    }
+    // 計算每個Fitness佔有的比例
+    for (int i = 0; i < popSize; i++) {
+        percentage = popList.get(i).fitness / totalSum;
+        popList.set(i, new Chromosome(popList.get(i).chromosome.clone(), popList.get(i).fitness, percentage));
+    }
+
+    // partialSum 比例依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
+    // 就把所索引值回傳代表選擇到這一個
+    for (int i = 0; i < popList.size(); i++) {
+        partialSum += popList.get(i).percentage;
+        if (randNum <= partialSum) {
+            return i;
+        }
+    }
+    return 0;
 }
 ```
  
