@@ -73,8 +73,7 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
 
 ![](https://i.imgur.com/7VAaWal.png)
 ![](https://i.imgur.com/8puNZ9N.png)
-
-
+![](https://i.imgur.com/QJnsfzV.png)
 
 ```java=
 int selection(ArrayList popList) {
