@@ -11,12 +11,14 @@
 ### Chromosome (染色體)
 在01背包中物品的數量代表每個染色體(Chromosome)的長度，每一個基因以0或1表示1代表該物品要拿;反之0代表該物品不拿。下圖範例為一個 Chromosome 內部含有六個基因，每一個基因代表每一個物品要不要拿。
 
-![](https://i.imgur.com/ND2NZfd.png)
+![](https://i.imgur.com/fmKs9gm.png)
 
 
 
 ### Population Initialization
 初始化的方式為建立N個染色體個體並隨機用亂數將每個基因賦予初始值，建立好之後會檢查該筆染色體的組合是否超出設定的最大重量W，若超重則拋棄並重新亂數產生出新的一條染色體;直到數量到達使用者所設定的 Population 的大小即可結束初始化動作。
+
+![](https://i.imgur.com/bn8BZct.png)
 
 
 ```java=
