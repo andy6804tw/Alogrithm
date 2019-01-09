@@ -42,7 +42,7 @@ void initPopulation(ArrayList popList,int popSize, int geneSize) {
 
 
 ### Calculation of Fitness
-在每次繁殖過程中需要計算每個染色體的Fitness(適應值)，在每個染色體的基因串列中1代表該物品要拿，所以就將該物品的重量(Weight)和利益值(Profit)分別記錄並累加起來。加總完成後檢查該染色體基因組合的背包重量是否超出設定的最大重量W，若超重則回傳0;反之回傳總利益值做為該染色體基因組合的Fitness。
+在每次繁殖過程中需要計算每個染色體的Fitness(適應值)，在每個染色體的基因串列中1代表該物品要拿，所以就將該物品的重量(Weight)和利益值(Profit)分別記錄並累加起來。加總完成後檢查該染色體基因組合的背包重量是否超出設定的最大重量 maxWeight，若超重則回傳0;反之回傳總利益值做為該染色體基因組合的Fitness。
 
 ```java=
 int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
@@ -64,7 +64,7 @@ int calcFitness(int[] chromosome,ArrayList itemList,int maxWeight) {
 
 
 ### Selection
-選擇父代與母代染色體來產生下一代，這邊選擇的方式使用 `輪盤選擇法` (Roulette Wheel Selection) 來實作。所謂的輪盤選擇法就是在整個族群中，每個個體存活下來或是可以產生後代的機率和個體的適應值分數成正比。也就是說 Fintness 越大的個體存活下來被選擇到的機率就越大，但弱勢個體也有存活的可能，不是絕對的淘汰。就想像個體放在飛標靶上，而個體分數就對應到個體擁有的標靶面積。
+選擇父代與母代染色體來產生下一代，這邊選擇的方式使用 `輪盤選擇法` (Roulette Wheel Selection) 來實作。所謂的輪盤選擇法就是在整個族群中，每個個體存活下來或是可以產生後代的機率和個體分數成正比。也就是說 Fintness 越大的個體存活下來被選擇到的機率就越大，但弱勢個體也有存活的可能，不是絕對的淘汰。就想像個體放在飛標靶上，而個體分數就對應到個體擁有的標靶面積。
 
 ```java=
 int selection(ArrayList popList) {
@@ -79,7 +79,7 @@ int selection(ArrayList popList) {
     }
     // 計算每個的機率
     for (i = 0 to popSize-1) {
-        popList.get(i).probability <- (GET i-th fitness in popList) / totalSum
+        popList(i).probability <- (GET i-th fitness in popList) / totalSum
     }
     // partialSum 機率依序加總直到隨機挑選出來的 randNum 小於等於 partialSum
     // 就把所索引值回傳表示選擇到這一個
@@ -96,24 +96,23 @@ int selection(ArrayList popList) {
 
 
 ### Crossover
-所謂 Crossover(交叉) 是指對兩個(父、母代)相互配對的染色體依據交叉率相互交換其部分基因，從而形成新的個體。Crossover 在 GA 演算法中是產生新個體子代的主要方法。
+所謂 Crossover(交叉) 是指對兩個(父、母代)配對的染色體相互交換其部分基因，從而形成新的個體。在這邊是使用隨機單點基因交換，並且隨機交換 N 次。
 
 ```java=
 int[][] crossover(int[] chromosome1, int[] chromosome2) {
-    int chromosome[][] <- new int[2][geneSize];
-    // crossover次數
-    int crossoverNum <- randomInt(0, geneSize - 1); 
-    for (i = 0 to crossoverNum-1) {
-        // 每次隨機選擇一個基因交換，一共交換 crossoverNum 次。
-        int exIndex <- randomInt(0, geneSize - 1);
-        int gene <- c1[exIndex];
-        chromosome1[exIndex] <- c2[exIndex];
-        chromosome2[exIndex] <- gene;
-
-    }
-    chromosome[0] <- chromosome1;
-    chromosome[1] <- chromosome2;
-    return chromosome;
+   int chromosome[][]
+   // 亂數取得 Crossover 次數
+   int crossoverNum <-Randomly generate an integer between 0 and chromosome length-1
+   for (i = 0 to crossoverNum-1) {
+       // 每次隨機選擇一個基因交換，一共交換 crossoverNum 次。
+       int exIndex <- Randomly generate an integer between 0 and chromosome length-1
+       int tempGene <- c1[exIndex]
+       chromosome1[exIndex] <- c2[exIndex]
+       chromosome2[exIndex] <- tempGene
+   }
+   chromosome[0] <- chromosome1
+   chromosome[1] <- chromosome2
+   return chromosome
 }
 ```
 
@@ -124,9 +123,9 @@ int[][] crossover(int[] chromosome1, int[] chromosome2) {
 ```java=
 int[] mutate(int[] chromsome) {
     // 隨機挑選一位1變0 0變1
-    int index <- randomInt(0, chromsome.length - 1);
-    chromsome[index] = 1 - chromsome[index];
-    return chromsome;
+    int index <- Randomly generate an integer between 0 and chromosome length-1
+    chromsome[index] = 1 - chromsome[index]
+    return chromsome
 }
 ```
 
@@ -141,10 +140,10 @@ ArrayList survivorSelect(ArrayList popList, int popSize) {
     ArrayList newList
     // 前 90% 大的個體先挑選起來，剩下的 10% 的個體使用亂數隨機挑選
     for (i = 0 to popSize - 1) {
-        if (count less than popSize * 0.9)
-            newList.add(GET chromosome in popList);
+        if (i less than (popSize * 0.9))
+            newList.add(GET i-th chromosome in popList);
         else
-            newList.add(Random GET chromosome in popList);
+            newList.add(Randomly GET chromosome in popList);
     }
     return newList
 }
