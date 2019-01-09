@@ -341,3 +341,5 @@ https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_survivor_se
 - [01Knapsack Genetic](https://blog.csdn.net/x_i_y_u_e/article/details/50353775)
 
 - [GA 基因演算法架構](https://dotblogs.com.tw/dragon229/2013/01/03/86692)
+
+- [GA 基因演算法(多方法)](http://my.oschina.net/u/1412321/blog/192454)
