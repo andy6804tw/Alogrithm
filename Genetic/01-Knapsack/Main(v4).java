@@ -177,9 +177,9 @@ class GAknapsack {
 	// Selection (輪盤選擇法)
 	private int selection() {
 		double probability = 0; // 機率
-		double totalSum = 0; // 全部 Fitness 總和的變數
-		double randNum = random(0, 1); // 0~1 中隨機取得亂數的變數
-		double partialSum = 0; // 目前機率加總的變數
+		double totalSum = 0; // 全部 Fitness 總和變數
+		double randNum = random(0, 1); // 隨機產生0~1之間的小數
+		double partialSum = 0; // 目前機率總和
 
 		// 計算所有的 Fitness 總和
 		for (int i = 0; i < popSize; i++) {
@@ -227,10 +227,9 @@ class GAknapsack {
 		for (int i = 0; i < crossoverNum; i++) {
 			// 次隨機選擇一個基因交換，一共交換 crossoverNum 次。
 			int exIndex = randomInt(0, geneSize - 1);
-			int gene = c1[exIndex];
+			int tempGene = c1[exIndex];
 			c1[exIndex] = c2[exIndex];
-			c2[exIndex] = gene;
-
+			c2[exIndex] = tempGene;
 		}
 		chromosome[0] = c1;
 		chromosome[1] = c2;
@@ -322,7 +321,7 @@ public class Knapsack {
 					itemList.get(i).unit);
 		}
 		// 物品、物品數量、背包最大承重、突變率、演化代數、Population 數量
-		GAknapsack gaKnapsack = new GAknapsack(itemList, N, maxWeight, 0.15, 0, 150);
+		GAknapsack gaKnapsack = new GAknapsack(itemList, N, maxWeight, 0.15, 500, 150);
 		gaKnapsack.GArun();
 	}
 }
