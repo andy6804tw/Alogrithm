@@ -5,7 +5,23 @@
 ### 架構
 首先初始化 Population 的所有的個體，依據使用者輸入可以自由定義 Population 的大小。接著第二步驟計算每一個個體的 Fitness ，這邊的 Fitness 即為在背包限重內所獲得的總利益值。第三步驟開始進行演化首先使用輪盤法則挑選父代與母代，個體被選中的概率與其 Fitness 成正比，所以 Fitness 越大被選重的機率就越高。父代與母代經由輪盤法則挑選完畢後接著進行 Crossover，這邊是以單點交叉來實作。交叉完畢後最後會經由使用者所設定的突變率來判斷是否要對個體產生突變，突變的用意是為了避免最佳值落在區域最佳當中。演化完成後會把 Population 中比較優良的個體保留起來接著回到第二步驟計算 Fitness 並再一次新的演化直到使用者所設定的最大演化代數，或是在連續N代中最佳值都一樣，才停止迴圈並列印出結果。
 
-![](https://i.imgur.com/MYycv1B.png)
+![](https://i.imgur.com/ZSs2mai.png)
+
+```java=
+void GAknapsack() {
+    // Population Initialization
+    initPopulation()
+    for (i = 0 to maxGeneration-1) {
+        // evolution
+        Selection()
+        Crossover()
+        Mutation()
+        SurvivorSelect()
+    }
+    // Terminate and print solution
+}
+```
+
 
 
 ### Chromosome (染色體)
